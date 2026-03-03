@@ -1,92 +1,121 @@
-Online Shop App - React Native
-A modern, feature-rich e-commerce mobile application built with React Native. This app provides a complete shopping experience with product browsing, cart management, wishlist functionality, and dark mode support.
+# 🛍️ Online Shop App – React Native
 
-✨ Features
-Product Listing - Browse products with search and category filtering
+A modern, feature-rich e-commerce mobile application built with React Native.  
+This app provides a complete shopping experience including product browsing, cart management, wishlist functionality, and dark mode support.
 
-Product Details - View detailed product information with quantity selector
+---
 
-Shopping Cart - Add/remove items, update quantities, and view totals
+## ✨ Features
 
-Wishlist - Save favorite products for later
+- 🛒 Product Listing – Browse products with search and category filtering  
+- 📄 Product Details – View detailed product information with quantity selector  
+- 🛍️ Shopping Cart – Add/remove items, update quantities, and view totals  
+- ❤️ Wishlist – Save favorite products for later  
+- 🌙 Dark Mode – Seamless dark/light theme switching  
+- 👤 Profile Screen – View stats and manage preferences  
+- 🔔 Real-time Updates – Cart badge updates instantly  
 
-Dark Mode - Seamless dark/light theme switching
+---
 
-Profile Screen - View stats and manage preferences
+## 📱 Screenshots
 
-Real-time Updates - Cart badge shows item count instantly
+Screenshots will be added here.
 
-📱 Screenshots
-[Screenshots will be added here]
+---
 
-🚀 Getting Started
-Prerequisites
-Before you begin, ensure you have met the following requirements:
+# 🚀 Getting Started
 
-Node.js (version 14 or newer)
+## ✅ Prerequisites
 
-npm or yarn package manager
+Make sure you have the following installed:
 
-React Native CLI (npm install -g react-native-cli)
+- Node.js (v14 or newer)
+- npm or yarn
+- React Native CLI  
+  npm install -g react-native-cli
+- Android Studio (for Android)
+- Xcode (for iOS – macOS only)
+- iOS Simulator or Android Emulator
 
-Android Studio (for Android development)
+> ⚠️ Ensure you have completed the official React Native Environment Setup before proceeding.
 
-Xcode (for iOS development, macOS only)
+---
 
-iOS Simulator (for iOS, macOS only) or Android Emulator
+## 📦 Step 1: Install Dependencies
 
-Environment Setup
-Note: Make sure you have completed the React Native Environment Setup instructions before proceeding.
+From the project root directory:
 
-Step 1: Install Dependencies
-Navigate to the project root and install all required dependencies:
-
-bash
-# Using npm
+Using npm:
+```
 npm install
+```
 
-# OR using Yarn
+Using Yarn:
+```
 yarn install
-For iOS Only
-If you're developing for iOS, install the CocoaPods dependencies:
+```
 
-bash
-cd ios && pod install && cd ..
-Step 2: Start the Metro Server
-First, you will need to start Metro, the JavaScript bundler that comes with React Native.
+### For iOS Only
+```
+cd ios
+pod install
+cd ..
+```
 
-bash
-# Using npm
+---
+
+## 🔥 Step 2: Start the Metro Server
+
+Using npm:
+```
 npm start
+```
 
-# OR using Yarn
+Using Yarn:
+```
 yarn start
+```
 
-# To clear cache if needed
+To clear cache:
+```
 npm start -- --reset-cache
-Step 3: Start your Application
-Let Metro Bundler run in its own terminal. Open a new terminal from the project root and run:
+```
 
-For Android
-bash
-# Using npm
+---
+
+## ▶️ Step 3: Run the Application
+
+Keep Metro running in one terminal, then open a new terminal in the project root.
+
+### 🤖 Run on Android
+Using npm:
+```
 npm run android
+```
 
-# OR using Yarn
+Using Yarn:
+```
 yarn android
-For iOS
-bash
-# Using npm
+```
+
+### 🍎 Run on iOS
+Using npm:
+```
 npm run ios
+```
 
-# OR using Yarn
+Using Yarn:
+```
 yarn ios
-If everything is set up correctly, you should see your app running in your Android Emulator or iOS Simulator shortly.
+```
 
-📦 Dependencies
-This project uses the following main dependencies:
+If everything is set up correctly, the app should launch in your emulator/simulator.
 
-json
+---
+
+# 📦 Dependencies
+
+```json
 {
   "react-native-vector-icons": "^10.0.0",
   "@react-navigation/native": "^6.1.7",
@@ -96,82 +125,87 @@ json
   "react-native-safe-area-context": "^4.7.1",
   "react-native-gesture-handler": "^2.12.0"
 }
-🏗 Project Structure
-text
+```
+
+---
+
+# 🏗 Project Structure
+
+```
 OnlineShopApp/
-├── src/
-│   ├── context/
-│   │   └── ShopContext.js          # Global state management
-│   ├── screens/
-│   │   ├── HomeScreen.js           # Product listing screen
-│   │   ├── ProductDetailScreen.js  # Product details screen
-│   │   ├── CartScreen.js           # Shopping cart screen
-│   │   ├── WishlistScreen.js       # Wishlist screen
-│   │   └── ProfileScreen.js        # User profile screen
-│   └── navigation/
-│       └── AppNavigator.js         # Navigation configuration
-├── App.js                          # Main app component
-└── package.json
-🎯 How to Use the App
-Navigation Guide
-Home Screen (Default)
+├── context/
+│   └── ShopContext.js
+├── screens/
+│   ├── HomeScreen.js
+│   ├── ProductDetailScreen.js
+│   ├── CartScreen.js
+│   ├── WishlistScreen.js
+│   └── ProfileScreen.js
+└── App.js
+```
 
-Browse all available products
+---
 
-Use the search bar to find specific items
+# 🎯 How to Use the App
 
-Filter products by category using chips
+## 🏠 Home Screen
+- Browse all products  
+- Search using the search bar  
+- Filter by category  
+- Tap a product to view details  
+- Tap ❤️ to add/remove from wishlist  
 
-Tap any product to view details
+## 📄 Product Details
+- View full description  
+- Adjust quantity using + and -  
+- Check stock availability  
+- Tap Add to Cart  
 
-Tap the heart icon to add/remove from wishlist
+## 🛍️ Cart Screen
+- Review cart items  
+- Modify quantity  
+- Remove items  
+- View subtotal and total  
+- Demo checkout button  
 
-Product Details
+## ❤️ Wishlist Screen
+- View saved products  
+- Add directly to cart  
+- Remove from wishlist  
 
-View full product description and specifications
+## 👤 Profile Screen
+- View shopping statistics  
+- Toggle dark mode  
+- Access demo account settings  
 
-Adjust quantity using + and - buttons
+---
 
-Check real-time stock availability
+# 🎨 Customization
 
-Tap "Add to Cart" to purchase
+Modify main app:
+```
+App.js
+```
 
-Cart Screen
+Modify screens:
+```
+../screens/
+```
 
-Review all items added to cart
+Modify global state:
+```
+../context/ShopContext.js
+```
 
-Modify quantities or remove items
+---
 
-View subtotal and total prices
+# 🔄 Reloading the App
 
-Proceed to checkout (demo only)
+### Android
+- Press R twice  
+- OR open Developer Menu:
+  - Ctrl + M (Windows/Linux)
+  - Cmd ⌘ + M (macOS)
 
-Wishlist Screen
-
-View all saved products
-
-Quickly add items to cart
-
-Remove items from wishlist
-
-Profile Screen
-
-View shopping statistics
-
-Toggle dark mode on/off
-
-Access account settings (UI demo)
-
-🎨 Customization
-Modifying the App
-Open App.js in your text editor to modify the main app component
-
-Edit screen files in src/screens/ to change UI and functionality
-
-Modify ShopContext.js to add more features or change the data structure
-
-For Android:
-Press <kbd>R</kbd> twice or select "Reload" from the Developer Menu (<kbd>Ctrl</kbd> + <kbd>M</kbd> on Windows/Linux, <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> on macOS)
-
-For iOS:
-Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in the iOS Simulator to reload
+### iOS
+- Press Cmd ⌘ + R in the iOS Simulator
