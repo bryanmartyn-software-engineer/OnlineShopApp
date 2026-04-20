@@ -11,9 +11,12 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 
 export default function WishlistScreen({ navigation }) {
-  const { wishlist, darkMode, toggleWishlist, addToCart } = useContext(ShopContext);
+  const { wishlist, darkMode, toggleWishlist, addToCart, isLogin } = useContext(ShopContext);
 
   const handleAddToCart = (item) => {
+    if (!isLogin) {
+      return navigation.navigate('Login');
+    }
     addToCart(item);
     toggleWishlist(item);
   };
@@ -73,6 +76,9 @@ export default function WishlistScreen({ navigation }) {
     }
   };
 
+  if (!isLogin) {
+    return navigation.navigate('Login');
+  }
   if (wishlist.length === 0) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>

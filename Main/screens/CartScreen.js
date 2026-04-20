@@ -19,9 +19,13 @@ export default function CartScreen({ navigation }) {
     updateQuantity,
     clearCart,
     getCartTotal,
+    isLogin,
   } = useContext(ShopContext);
 
   const handleCheckout = () => {
+    if (!isLogin) {
+      return navigation.navigate('Login');
+    }
     Alert.alert(
       'Checkout',
       `Total: $${getCartTotal().toFixed(2)}\n\nThis is a demo app. Thank you for shopping!`,
@@ -40,6 +44,9 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleClearCart = () => {
+    if (!isLogin) {
+      return navigation.navigate('Login');
+    }
     Alert.alert(
       'Clear Cart',
       'Are you sure you want to remove all items from your cart?',
@@ -113,6 +120,9 @@ export default function CartScreen({ navigation }) {
     }
   };
 
+  if (!isLogin) {
+    return navigation.navigate('Login');
+  }
   if (cart.length === 0) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>

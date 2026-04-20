@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, { useContext } from 'react';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -12,6 +12,7 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import CartScreen from './screens/CartScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import AuthScreen from './screens/AuthScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -64,7 +65,8 @@ function HomeStack() {
         contentStyle: {
           backgroundColor: darkMode ? '#121212' : '#f8f9fa',
         },
-      }}>
+      }}
+    >
       <Stack.Screen 
         name="HomeScreen" 
         component={HomeScreen} 
@@ -103,7 +105,8 @@ function CartStack() {
         contentStyle: {
           backgroundColor: darkMode ? '#121212' : '#f8f9fa',
         },
-      }}>
+      }}
+    >
       <Stack.Screen 
         name="CartScreen" 
         component={CartScreen} 
@@ -145,7 +148,7 @@ function WishlistStack() {
 }
 
 function ProfileStack() {
-  const { darkMode } = useContext(ShopContext);
+  const { darkMode, isLogin } = useContext(ShopContext);
   
   return (
     <Stack.Navigator
@@ -165,12 +168,22 @@ function ProfileStack() {
         contentStyle: {
           backgroundColor: darkMode ? '#121212' : '#f8f9fa',
         },
-      }}>
-      <Stack.Screen 
-        name="ProfileScreen" 
-        component={ProfileScreen} 
-        options={{ title: 'Profile' }}
-      />
+      }}
+    >
+      {isLogin ?
+        <Stack.Screen 
+          name="ProfileScreen" 
+          component={ProfileScreen} 
+          options={{ title: 'Profile' }}
+        />
+      :
+        <Stack.Screen
+          name="AuthScreen"
+          component={AuthScreen}
+          initialParams={{ type: 'login' }}
+          options={{ headerShown: false}}
+        />
+    }
     </Stack.Navigator>
   );
 }
@@ -220,7 +233,16 @@ function TabNavigator() {
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Cart" component={CartStack} />
       <Tab.Screen name="Wishlist" component={WishlistStack} />
-      <Tab.Screen name="Profile" component={ProfileStack} />
+      <Tab.Screen name="Profile" component={ProfileStack} 
+        options={({ route }) => {
+          const routeName = getFocusedRouteNameFromRoute(route) ?? 'AuthScreen';
+          return {
+            tabBarStyle: {
+              display: routeName === 'AuthScreen' ? 'none' : 'flex',
+            },
+          };
+        }}
+      />
     </Tab.Navigator>
   );
 }
