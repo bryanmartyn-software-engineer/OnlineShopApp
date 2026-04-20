@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 import React, { useContext } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StatusBar, View, Text } from 'react-native';
 
@@ -14,7 +14,7 @@ import WishlistScreen from './screens/WishlistScreen';
 import ProfileScreen from './screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 // Custom themes
 const CustomLightTheme = {
