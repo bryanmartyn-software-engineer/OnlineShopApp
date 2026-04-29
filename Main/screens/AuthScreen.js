@@ -5,34 +5,59 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
-import { TouchableHighlight } from 'react-native-gesture-handler';
 
 const InputWithLabel = (props) => {
     const [touched, setTouched] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { darkMode } = useContext(ShopContext);
 
     let showError = touched && !props.validateRule;
+    const isPassword = props.secureTextEntry;
 
     return (
         <View style={styles.section}>
-            <Text style={[styles.label, darkMode && styles.darkLabel]}>{props.label}</Text>
+            <Text style={[styles.label, darkMode && styles.darkLabel]}>
+                {props.label}
+            </Text>
 
-            <TextInput
-                style={[
-                    styles.input,
-                    darkMode && styles.darkInput,
-                    showError && { borderColor: 'red' }
-                ]}
-                placeholderTextColor={darkMode ? '#999' : '#666'}
-                onBlur={() => {setTouched(true)}}
-                {...props}
-            />
+            <View style={{ position: 'relative' }}>
+                <TextInput
+                    {...props}
+                    style={[
+                        styles.input,
+                        darkMode && styles.darkInput,
+                        showError && { borderColor: 'red' },
+                        isPassword && { paddingRight: 40 }
+                    ]}
+                    placeholderTextColor={darkMode ? '#999' : '#666'}
+                    secureTextEntry={isPassword && !showPassword}
+                    onBlur={() => setTouched(true)}
+                />
 
-            <View length={12} style={{ marginTop: 5 }}>
+                {isPassword && (
+                    <TouchableOpacity
+                        onPress={() => setShowPassword(prev => !prev)}
+                        style={{
+                            position: 'absolute',
+                            right: 10,
+                            top: '50%',
+                            transform: [{ translateY: -12 }]
+                        }}
+                    >
+                        <MaterialIcons
+                            name={showPassword ? 'visibility' : 'visibility-off'}
+                            size={24}
+                            color={darkMode ? '#999' : '#666'}
+                        />
+                    </TouchableOpacity>
+                )}
+            </View>
+
+            <View style={{ marginTop: 5 }}>
                 {showError && (
                     <Text style={styles.message}>
                         {props.message}
@@ -51,7 +76,11 @@ export default function AuthScreen({ route, navigation }){
         email: '',
         password: '',
         confirmPassword: ''
-    });  //login:{email,password},registration:{name,email,password,confirmPassword}
+    });  
+    // login:{email,password},
+    // registration:{name,email,password,confirmPassword}
+    // verify:{password}
+    // edit:{name,password}
 
     const checkAuth = () => {
         if (type === 'login') {
@@ -66,13 +95,20 @@ export default function AuthScreen({ route, navigation }){
     
     return (
         <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
-            <TouchableHighlight onPress={() => navigation.goBack()} style={[styles.back, darkMode && styles.darkBack]}>
+            <TouchableOpacity
+                onPress={() => isLogin ? navigation.goBack() : navigation.navigate('Home')}
+                style={[styles.back, darkMode && styles.darkBack]}>
                 <Text style={styles.backText}>{'<'} Back</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <View style={styles.section}>
                 <View style={styles.title}>
                     <Text style={[styles.titleText, darkMode && styles.darkTitleText]}>
-                        {type === 'login' ? 'Login' : 'Create Account'}
+                        {
+                            type === 'login' ? 'Login' 
+                            : type === 'registration' ? 'Create Account'
+                            : type === 'verify' ? 'Verify Account'
+                            : type === 'edit' && 'Edit Profile'
+                        }
                     </Text>
                 </View>
                 {
@@ -99,7 +135,7 @@ export default function AuthScreen({ route, navigation }){
                                 message='The password should contain at least 8 characters.'
                             />
                         </View>
-                    ) :
+                    ) : type === 'registration' ?
                     (
                         <View style={styles.form}>
                             <InputWithLabel
@@ -139,26 +175,76 @@ export default function AuthScreen({ route, navigation }){
                                 message='Passwords do not match.'
                             />
                         </View>
+                    ) : type === 'verify' ?
+                    (
+                        <View style={styles.form}>
+                            <InputWithLabel
+                                label={'Password'}
+                                secureTextEntry
+                                placeholder='Enter your password'
+                                value={auth.password}
+                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
+                                validateRule={!!auth.password && auth.password.length >= 8}
+                                message='The password should contain at least 8 characters.'
+                            />
+                        </View>
+                    ) : type === 'edit' &&
+                    (
+                        <View style={styles.form}>
+                            <InputWithLabel
+                                label={'Name'}
+                                keyboardType='default'
+                                placeholder='Enter your username'
+                                value={auth.name}
+                                onChangeText={(value) => setAuth(auth => ({...auth,name:value}))}
+                                validateRule={!!auth.name && auth.name.length >= 1}
+                                message='Username should be at least 1 character long.'
+                            />
+                            <InputWithLabel
+                                label={'Password'}
+                                secureTextEntry
+                                placeholder='Enter your password'
+                                value={auth.password}
+                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
+                                validateRule={!!auth.password && auth.password.length >= 8}
+                                message='The password should contain at least 8 characters.'
+                            />
+                        </View>
                     )
                 }
             </View>
             <View style={styles.section}>
                 <TouchableOpacity style={styles.button} onPress={ checkAuth } >
                     <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 20 }}>
-                        {type === 'registration' ? 'Register' : 'Login'}
+                        { 
+                            type === 'login' ? 'Login'
+                            : type === 'registration' ? 'Register'
+                            : type === 'verify' ? 'Verify Account'
+                            : type === 'edit' && 'Save Changes'
+                        }
                     </Text>
                 </TouchableOpacity>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                    <Text style={{fontSize:16, color: darkMode ?'#FFF' : '#000'}}>
-                        {type === 'registration' ? 'Already have an account? ' : 'Don\'t have an account? '}
-                    </Text>
-                    <TouchableOpacity style={styles.link} onPress={() => {
-                        setAuth({});
-                        navigation.replace('AuthScreen', { type: type === 'login' ? 'registration' : 'login' });
-                    }}>
-                        <Text style={styles.textButton}>{type === 'login' ? 'Create Account' : 'Login'}</Text>
-                    </TouchableOpacity>
-                </View>
+                {
+                    (type === 'login' || type === 'registration') && 
+                    (
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
+                            <Text style={{fontSize:16, color: darkMode ?'#FFF' : '#000'}}>
+                                { type === 'login' ? 'Don\'t have an account? ' 
+                                    : 'Already have an account? '}
+                            </Text>
+                            <TouchableOpacity style={styles.link} onPress={() => {
+                                setAuth({});
+                                navigation.replace('AuthScreen', { type: type === 'login' ? 'registration' 
+                                    : 'login' });
+                            }}>
+                                <Text style={styles.textButton}>
+                                    {type === 'login' ? 'Create Account' 
+                                        : 'Login'}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
             </View>
         </ScrollView>
     )

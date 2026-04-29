@@ -170,20 +170,17 @@ function ProfileStack() {
         },
       }}
     >
-      {isLogin ?
-        <Stack.Screen 
-          name="ProfileScreen" 
-          component={ProfileScreen} 
-          options={{ title: 'Profile' }}
-        />
-      :
-        <Stack.Screen
-          name="AuthScreen"
-          component={AuthScreen}
-          initialParams={{ type: 'login' }}
-          options={{ headerShown: false}}
-        />
-    }
+      <Stack.Screen 
+        name="ProfileScreen" 
+        component={ProfileScreen} 
+        options={{ title: 'Profile' }}
+      />
+      <Stack.Screen
+        name="AuthScreen"
+        component={AuthScreen}
+        initialParams={{ type: 'login' }}
+        options={{ headerShown: false}}
+      />
     </Stack.Navigator>
   );
 }

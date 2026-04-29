@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 
 export default function ProfileScreen({ navigation }) {
-  const { darkMode, setDarkMode, cart, wishlist, getCartTotal } = useContext(ShopContext);
+  const { darkMode, setDarkMode, cart, wishlist, getCartTotal, isLogin } = useContext(ShopContext);
+
+  useEffect(() => {
+    if (!isLogin) {
+      navigation.replace('AuthScreen');
+    }
+  }, [isLogin]);
 
   const stats = [
     {
@@ -110,7 +116,8 @@ export default function ProfileScreen({ navigation }) {
             Account
           </Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} 
+            onPress={() => navigation.navigate('AuthScreen', { type: 'edit' })}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="person-outline" size={22} color="#6C63FF" />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>

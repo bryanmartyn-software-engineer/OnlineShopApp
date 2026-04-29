@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,9 +23,6 @@ export default function CartScreen({ navigation }) {
   } = useContext(ShopContext);
 
   const handleCheckout = () => {
-    if (!isLogin) {
-      return navigation.navigate('Login');
-    }
     Alert.alert(
       'Checkout',
       `Total: $${getCartTotal().toFixed(2)}\n\nThis is a demo app. Thank you for shopping!`,
@@ -44,9 +41,6 @@ export default function CartScreen({ navigation }) {
   };
 
   const handleClearCart = () => {
-    if (!isLogin) {
-      return navigation.navigate('Login');
-    }
     Alert.alert(
       'Clear Cart',
       'Are you sure you want to remove all items from your cart?',
@@ -121,9 +115,29 @@ export default function CartScreen({ navigation }) {
   };
 
   if (!isLogin) {
-    return navigation.navigate('Login');
+    return (
+      <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
+        <View style={styles.centerContainer}>
+          <Text style={[
+            styles.loginText,
+            darkMode && styles.darkLoginText
+          ]}>
+            You must log in to view your cart
+          </Text>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('Profile', {
+              screen: 'AuthScreen',
+              params: { type: 'login' }
+            })}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
   }
-  if (cart.length === 0) {
+  else if (cart.length === 0) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
         <View style={styles.emptyContainer}>
@@ -145,63 +159,66 @@ export default function CartScreen({ navigation }) {
     );
   }
 
-  return (
-    <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
-      <FlatList
-        data={cart}
-        renderItem={renderCartItem}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.cartList}
-        ListFooterComponent={
-          <View style={styles.summaryContainer}>
-            <View style={styles.summaryRow}>
-              <Text style={[styles.summaryLabel, darkMode && styles.darkText]}>
-                Subtotal:
-              </Text>
-              <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
-                ${getCartTotal().toFixed(2)}
-              </Text>
+  else
+  {
+    return (
+      <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
+        <FlatList
+          data={cart}
+          renderItem={renderCartItem}
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.cartList}
+          ListFooterComponent={
+            <View style={styles.summaryContainer}>
+              <View style={styles.summaryRow}>
+                <Text style={[styles.summaryLabel, darkMode && styles.darkText]}>
+                  Subtotal:
+                </Text>
+                <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
+                  ${getCartTotal().toFixed(2)}
+                </Text>
+              </View>
+              <View style={styles.summaryRow}>
+                <Text style={[styles.summaryLabel, darkMode && styles.darkText]}>
+                  Shipping:
+                </Text>
+                <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
+                  Free
+                </Text>
+              </View>
+              <View style={[styles.totalRow, darkMode && styles.darkTotalRow]}>
+                <Text style={[styles.totalLabel, darkMode && styles.darkText]}>
+                  Total:
+                </Text>
+                <Text style={[styles.totalAmount, darkMode && styles.darkText]}>
+                  ${getCartTotal().toFixed(2)}
+                </Text>
+              </View>
             </View>
-            <View style={styles.summaryRow}>
-              <Text style={[styles.summaryLabel, darkMode && styles.darkText]}>
-                Shipping:
-              </Text>
-              <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
-                Free
-              </Text>
-            </View>
-            <View style={[styles.totalRow, darkMode && styles.darkTotalRow]}>
-              <Text style={[styles.totalLabel, darkMode && styles.darkText]}>
-                Total:
-              </Text>
-              <Text style={[styles.totalAmount, darkMode && styles.darkText]}>
-                ${getCartTotal().toFixed(2)}
-              </Text>
-            </View>
-          </View>
-        }
-      />
+          }
+        />
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.clearButton}
-          onPress={handleClearCart}
-        >
-          <MaterialIcons name="delete-sweep" size={20} color="#FF6B6B" />
-          <Text style={styles.clearButtonText}>Clear</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={styles.checkoutButton}
-          onPress={handleCheckout}
-        >
-          <Text style={styles.checkoutButtonText}>Checkout</Text>
-          <MaterialIcons name="arrow-forward" size={20} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
+        <View style={styles.footer}>
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={handleClearCart}
+          >
+            <MaterialIcons name="delete-sweep" size={20} color="#FF6B6B" />
+            <Text style={styles.clearButtonText}>Clear</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={handleCheckout}
+          >
+            <Text style={styles.checkoutButtonText}>Checkout</Text>
+            <MaterialIcons name="arrow-forward" size={20} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -390,6 +407,42 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   checkoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  loginText: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#2c3e50',
+  },
+  darkLoginText: {
+    color: '#ecf0f1',
+  },
+  loginText: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#2c3e50',
+    marginBottom: 20,
+  },
+  darkLoginText: {
+    color: '#ecf0f1',
+  },
+  loginButton: {
+    backgroundColor: '#6C63FF',
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+  },
+  loginButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',

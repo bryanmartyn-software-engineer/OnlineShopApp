@@ -13,7 +13,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 
 export default function HomeScreen({ navigation }) {
-  const { products, darkMode, loading, toggleWishlist, isInWishlist } = useContext(ShopContext);
+  const { products, darkMode, loading, toggleWishlist, isInWishlist, isLogin } = useContext(ShopContext);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -45,7 +45,12 @@ export default function HomeScreen({ navigation }) {
           <Text style={[styles.productName, darkMode && styles.darkText]} numberOfLines={1}>
             {item.name}
           </Text>
-          <TouchableOpacity onPress={() => toggleWishlist(item)}>
+          <TouchableOpacity onPress={() => 
+            {if (!isLogin) {
+              return navigation.navigate('Profile', { screen: 'AuthScreen' });
+            }
+            else
+            toggleWishlist(item)}}>
             <MaterialIcons 
               name={isInWishlist(item.id) ? 'favorite' : 'favorite-border'} 
               size={22} 
