@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
     ScrollView,
     View,
@@ -6,6 +6,7 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    FlatList, ActivityIndicator
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
@@ -17,7 +18,7 @@ const InputWithLabel = (props) => {
 
     let showError = touched && !props.validateRule;
     const isPassword = props.secureTextEntry;
-
+    
     return (
         <View style={styles.section}>
             <Text style={[styles.label, darkMode && styles.darkLabel]}>
@@ -82,6 +83,31 @@ export default function AuthScreen({ route, navigation }){
     // verify:{password}
     // edit:{name,password}
 
+    // for triggering button state
+    const [isAuth, setIsAuth] = useState(false);
+    useEffect(() => {
+        let valid = false;
+
+        if (type === 'login') {
+            valid =
+                /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email) &&
+                auth.password.length >= 8;
+        } else if (type === 'registration') {
+            valid =
+                /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email) &&
+                auth.name.length >= 1 &&
+                auth.password.length >= 8 &&
+                auth.password === auth.confirmPassword;
+        } else if (type === 'verify') {
+            valid = auth.password.length >= 8;
+        } else if (type === 'edit') {
+            valid =
+                auth.name.length >= 1 &&
+                auth.password.length >= 8;
+        }
+        setIsAuth(valid);
+    }, [auth, type]);
+
     const checkAuth = () => {
         if (type === 'login') {
 
@@ -90,8 +116,6 @@ export default function AuthScreen({ route, navigation }){
 
         }
     }
-
-    
     
     return (
         <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
@@ -134,6 +158,7 @@ export default function AuthScreen({ route, navigation }){
                                 validateRule={!!auth.password && auth.password.length >= 8}
                                 message='The password should contain at least 8 characters.'
                             />
+
                         </View>
                     ) : type === 'registration' ?
                     (
@@ -214,7 +239,8 @@ export default function AuthScreen({ route, navigation }){
                 }
             </View>
             <View style={styles.section}>
-                <TouchableOpacity style={styles.button} onPress={ checkAuth } >
+                <TouchableOpacity style={[styles.button,!isAuth && { opacity: 0.5 }]} 
+                    disabled={!isAuth} onPress={ checkAuth } >
                     <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 20 }}>
                         { 
                             type === 'login' ? 'Login'

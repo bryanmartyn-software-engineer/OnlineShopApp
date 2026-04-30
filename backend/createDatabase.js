@@ -17,8 +17,9 @@ async function createDatabase() {
         CREATE TABLE user (
         userId INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        emailAddress TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
+        email TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL,
+        address TEXT
         );
 
         CREATE TABLE product (
@@ -43,9 +44,6 @@ async function createDatabase() {
         orderDate TEXT,
         totalAmount REAL NOT NULL,
         address TEXT NOT NULL,
-        city TEXT NOT NULL,
-        state TEXT NOT NULL,
-        zip INTEGER NOT NULL,
         FOREIGN KEY (userId) REFERENCES user(userId)
         );
 
@@ -82,12 +80,12 @@ async function createDatabase() {
     db.serialize(() => {
         const stmt = db.prepare(`
             INSERT INTO user (
-            "name", "emailAddress", "password"
+            "name", "email", "password", "address"
             )
-            VALUES (?, ?, ?)
+            VALUES (?, ?, ?, ?)
         `);
 
-        stmt.run('Harry Potter', 'harry@example.com', '12345678');
+        stmt.run('Harry Potter', 'harry@example.com', '12345678', '4 Privet Drive, Little Whinging, Surrey');
         stmt.finalize();
     })
 
@@ -374,11 +372,6 @@ async function createDatabase() {
         });
     });
 
-    // Close database
-    await db.close(err => {
-        if (err) {
-        return console.error(err.message);
-        }
-        console.log('Database closed.');
-    });
 }
+
+module.exports = { createDatabase };
