@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,20 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
+  TouchableHighlight,
+  TouchableNativeFeedback
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 
-export default function ProfileScreen() {
-  const { darkMode, setDarkMode, cart, wishlist, getCartTotal } = useContext(ShopContext);
+export default function ProfileScreen({ navigation }) {
+  const { darkMode, setDarkMode, cart, wishlist, getCartTotal, isLogin } = useContext(ShopContext);
+
+  useEffect(() => {
+    if (!isLogin) {
+      navigation.replace('AuthScreen');
+    }
+  }, [isLogin]);
 
   const stats = [
     {
@@ -20,12 +28,14 @@ export default function ProfileScreen() {
       label: 'Cart Items',
       value: cart.length,
       color: '#6C63FF',
+      navigate: 'Cart',
     },
     {
       icon: 'favorite',
       label: 'Wishlist',
       value: wishlist.length,
       color: '#FF6B6B',
+      navigate: 'Wishlist',
     },
     {
       icon: 'attach-money',
@@ -52,20 +62,23 @@ export default function ProfileScreen() {
 
         <View style={styles.statsGrid}>
           {stats.map((stat, index) => (
-            <View key={index} style={[styles.statCard, darkMode && styles.darkCard]}>
-              <View style={[styles.statIconContainer, { backgroundColor: `${stat.color}15` }]}>
-                <MaterialIcons name={stat.icon} size={24} color={stat.color} />
+            <TouchableOpacity  activeOpacity={0.8} key={index} style={[styles.statButton, darkMode && styles.darkButton]}
+              onPress={() => navigation.navigate(stat.navigate)} disabled={!stat.navigate}>
+              <View style={[styles.statCard]}>
+                <View style={[styles.statIconContainer, { backgroundColor: `${stat.color}15` }]}>
+                  <MaterialIcons name={stat.icon} size={24} color={stat.color} />
+                </View>
+                <Text style={[styles.statValue, darkMode && styles.darkText]}>
+                  {stat.value}
+                </Text>
+                <Text style={[styles.statLabel, darkMode && styles.darkSubText]}>
+                  {stat.label}
+                </Text>
               </View>
-              <Text style={[styles.statValue, darkMode && styles.darkText]}>
-                {stat.value}
-              </Text>
-              <Text style={[styles.statLabel, darkMode && styles.darkSubText]}>
-                {stat.label}
-              </Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
-
+          
         <View style={[styles.section, darkMode && styles.darkSection]}>
           <Text style={[styles.sectionTitle, darkMode && styles.darkSubText]}>
             Preferences
@@ -103,7 +116,8 @@ export default function ProfileScreen() {
             Account
           </Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} 
+            onPress={() => navigation.navigate('AuthScreen', { type: 'edit' })}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="person-outline" size={22} color="#6C63FF" />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
@@ -228,22 +242,24 @@ const styles = StyleSheet.create({
     padding: 16,
     gap: 12,
   },
-  statCard: {
-    flex: 1,
+  statButton: {
     backgroundColor: '#ffffff',
+    flex: 1,
     borderRadius: 16,
     padding: 16,
-    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
-  darkCard: {
+  darkButton: {
     backgroundColor: '#1e1e1e',
     shadowColor: '#000',
     shadowOpacity: 0.3,
+  },
+  statCard: {
+    alignItems: 'center',
   },
   statIconContainer: {
     width: 48,

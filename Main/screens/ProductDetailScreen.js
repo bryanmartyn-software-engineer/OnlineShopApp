@@ -12,10 +12,13 @@ import { ShopContext } from '../context/ShopContext';
 
 export default function ProductDetailScreen({ route, navigation }) {
   const { product } = route.params;
-  const { darkMode, addToCart, toggleWishlist, isInWishlist } = useContext(ShopContext);
+  const { darkMode, addToCart, toggleWishlist, isInWishlist, isLogin } = useContext(ShopContext);
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
+const handleAddToCart = () => {
+    if (!isLogin) {
+      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+    }
     addToCart(product, quantity);
     Alert.alert(
       'Added to Cart',
@@ -28,12 +31,18 @@ export default function ProductDetailScreen({ route, navigation }) {
   };
 
   const incrementQuantity = () => {
+    if (!isLogin) {
+      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+    }
     if (quantity < product.stock) {
       setQuantity(prev => prev + 1);
     }
   };
 
   const decrementQuantity = () => {
+    if (!isLogin) {
+      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+    }
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
@@ -56,7 +65,12 @@ export default function ProductDetailScreen({ route, navigation }) {
           <Text style={[styles.productName, darkMode && styles.darkText]}>
             {product.name}
           </Text>
-          <TouchableOpacity onPress={() => toggleWishlist(product)}>
+          <TouchableOpacity onPress={() => 
+            {if (!isLogin) {
+              return navigation.navigate('Profile', { screen: 'AuthScreen' });
+            }
+            else
+            toggleWishlist(product)}}>
             <MaterialIcons 
               name={isInWishlist(product.id) ? 'favorite' : 'favorite-border'} 
               size={28} 

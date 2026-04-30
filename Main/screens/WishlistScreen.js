@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 
 export default function WishlistScreen({ navigation }) {
-  const { wishlist, darkMode, toggleWishlist, addToCart } = useContext(ShopContext);
+  const { wishlist, darkMode, toggleWishlist, addToCart, isLogin } = useContext(ShopContext);
 
   const handleAddToCart = (item) => {
     addToCart(item);
@@ -72,8 +72,30 @@ export default function WishlistScreen({ navigation }) {
       default: return 'inventory';
     }
   };
-
-  if (wishlist.length === 0) {
+  if (!isLogin) {
+    return (
+      <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
+        <View style={styles.centerContainer}>
+          <Text style={[
+            styles.loginText,
+            darkMode && styles.darkLoginText
+          ]}>
+            You must log in to view your wishlist
+          </Text>
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={() => navigation.navigate('Profile', {
+              screen: 'AuthScreen',
+              params: { type: 'login' }
+            })}
+          >
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+  else if (wishlist.length === 0) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
         <View style={styles.emptyContainer}>
@@ -95,17 +117,19 @@ export default function WishlistScreen({ navigation }) {
     );
   }
 
-  return (
-    <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
-      <FlatList
-        data={wishlist}
-        renderItem={renderWishlistItem}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.wishlistList}
-      />
-    </SafeAreaView>
-  );
+  else {
+    return (
+      <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
+        <FlatList
+          data={wishlist}
+          renderItem={renderWishlistItem}
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.wishlistList}
+        />
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -195,6 +219,42 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 12,
     fontWeight: '500',
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  loginText: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#2c3e50',
+  },
+  darkLoginText: {
+    color: '#ecf0f1',
+  },
+  loginText: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#2c3e50',
+    marginBottom: 20,
+  },
+  darkLoginText: {
+    color: '#ecf0f1',
+  },
+  loginButton: {
+    backgroundColor: '#6C63FF',
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 12,
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   emptyContainer: {
     flex: 1,

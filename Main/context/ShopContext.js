@@ -6,8 +6,9 @@ export const ShopProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
 
   // Sample products data
   useEffect(() => {
@@ -76,6 +77,7 @@ export const ShopProvider = ({ children }) => {
     
     setProducts(sampleProducts);
     setLoading(false);
+
   }, []);
 
   // Cart functions
@@ -149,7 +151,9 @@ export const ShopProvider = ({ children }) => {
       wishlist,
       darkMode,
       loading,
+      isLogin,
       setDarkMode,
+      setIsLogin,
       addToCart,
       removeFromCart,
       updateQuantity,
