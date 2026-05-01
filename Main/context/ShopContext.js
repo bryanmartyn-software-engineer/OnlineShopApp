@@ -29,8 +29,6 @@ export const ShopProvider = ({ children }) => {
           const user = JSON.parse(savedUserData);
           setUserData(user);
           setIsLogin(true);
-          // Fetch their cart/wishlist from server
-          fetchUserData(user.userId);
         }
       } catch (error) {
         console.error('Error loading settings:', error);
@@ -72,6 +70,13 @@ export const ShopProvider = ({ children }) => {
 
     fetchProducts();
   }, []);
+
+  // Fetch cart/wishlist when both products and user are loaded
+  useEffect(() => {
+    if (isLogin && userData && products.length > 0) {
+      fetchUserData(userData.userId);
+    }
+  }, [isLogin, userData, products.length > 0]);
 
   // Fetch user data (Cart & Wishlist)
   const fetchUserData = async (userId) => {
@@ -271,9 +276,6 @@ export const ShopProvider = ({ children }) => {
         setUserData(userFullData);
         // Save to AsyncStorage
         await AsyncStorage.setItem('userData', JSON.stringify(userFullData));
-
-        // Fetch saved cart and wishlist
-        await fetchUserData(data.userId);
 
         return { success: true };
       } else {
