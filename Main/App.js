@@ -1,10 +1,10 @@
 import 'react-native-gesture-handler';
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme, getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { StatusBar, View, Text } from 'react-native';
+import { StatusBar, View, Text, Animated, Image, StyleSheet } from 'react-native';
 
 import { ShopProvider, ShopContext } from './context/ShopContext';
 import { Colors } from './styles/colors';
@@ -272,8 +272,72 @@ function TabNavigator() {
   );
 }
 
+function SplashScreen({ onFinish }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const { darkMode } = useContext(ShopContext);
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        friction: 4,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    const timer = setTimeout(() => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 600,
+        useNativeDriver: true,
+      }).start(() => onFinish());
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <View style={[styles.splashContainer, { backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground }]}>
+      <Animated.View style={[styles.splashContent, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
+        <View style={styles.splashLogoContainer}>
+          <Image 
+            source={require('../images/logo.png')} 
+            style={styles.splashLogo} 
+            resizeMode="contain" 
+          />
+        </View>
+        <Text style={[styles.splashTitle, { color: darkMode ? Colors.darkText : Colors.lightText }]}>
+          OnlineShopApp
+        </Text>
+        <Text style={[styles.splashTagline, { color: darkMode ? Colors.darkSubText : Colors.lightSubText }]}>
+          Your shop, your favorites.
+        </Text>
+      </Animated.View>
+    </View>
+  );
+}
+
 function AppContent() {
   const { darkMode } = useContext(ShopContext);
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return (
+      <>
+        <StatusBar 
+          barStyle={darkMode ? 'light-content' : 'dark-content'} 
+          backgroundColor={darkMode ? Colors.darkBackground : Colors.lightBackground}
+        />
+        <SplashScreen onFinish={() => setShowSplash(false)} />
+      </>
+    );
+  }
 
   return (
     <>
@@ -287,6 +351,42 @@ function AppContent() {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  splashContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  splashContent: {
+    alignItems: 'center',
+  },
+  splashLogoContainer: {
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    elevation: 8,
+    marginBottom: 24,
+  },
+  splashLogo: {
+    width: 120,
+    height: 120,
+  },
+  splashTitle: {
+    fontSize: 32,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  splashTagline: {
+    fontSize: 16,
+    marginTop: 8,
+    fontWeight: '500',
+  },
+});
 
 export default function App() {
   return (
