@@ -5,7 +5,6 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   SafeAreaView,
   ActivityIndicator,
   Image,
@@ -183,8 +182,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 20,
+    justifyContent: 'flex-start',
+    gap: 15,
   },
   logoContainer: {
     backgroundColor: '#FFFFFF',
@@ -260,6 +259,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 15,
     width: '48%',
+    height: 260, // Enforce alignment
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

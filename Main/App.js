@@ -48,23 +48,31 @@ const CustomDarkTheme = {
 
 function SearchStack() {
   const { darkMode } = useContext(ShopContext);
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: darkMode ? Colors.darkSurface : Colors.lightSurface,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: darkMode ? Colors.darkBorder : Colors.lightBorder,
+        },
+        headerTintColor: darkMode ? Colors.darkText : Colors.lightText,
+        headerTitleStyle: {
+          fontWeight: '700',
         },
       }}
     >
-      <Stack.Screen 
-        name="SearchScreen" 
-        component={SearchScreen} 
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
         options={{ title: 'Search' }}
       />
-      <Stack.Screen 
-        name="ProductDetail" 
+      <Stack.Screen
+        name="ProductDetail"
         component={ProductDetailScreen}
         options={({ route }) => ({
           title: route.params?.product?.name || 'Product Details',
@@ -77,23 +85,31 @@ function SearchStack() {
 
 function HomeStack() {
   const { darkMode } = useContext(ShopContext);
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: darkMode ? Colors.darkSurface : Colors.lightSurface,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: darkMode ? Colors.darkBorder : Colors.lightBorder,
+        },
+        headerTintColor: darkMode ? Colors.darkText : Colors.lightText,
+        headerTitleStyle: {
+          fontWeight: '700',
         },
       }}
     >
-      <Stack.Screen 
-        name="HomeScreen" 
-        component={HomeScreen} 
-        options={{ headerShown: false }}
+      <Stack.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ title: 'Home' }}
       />
-      <Stack.Screen 
-        name="ProductDetail" 
+      <Stack.Screen
+        name="ProductDetail"
         component={ProductDetailScreen}
         options={({ route }) => ({
           title: route.params?.product?.name || 'Product Details',
@@ -106,19 +122,27 @@ function HomeStack() {
 
 function CartStack() {
   const { darkMode } = useContext(ShopContext);
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: darkMode ? Colors.darkSurface : Colors.lightSurface,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: darkMode ? Colors.darkBorder : Colors.lightBorder,
+        },
+        headerTintColor: darkMode ? Colors.darkText : Colors.lightText,
+        headerTitleStyle: {
+          fontWeight: '700',
         },
       }}
     >
-      <Stack.Screen 
-        name="CartScreen" 
-        component={CartScreen} 
+      <Stack.Screen
+        name="CartScreen"
+        component={CartScreen}
         options={{ title: 'Shopping Cart' }}
       />
     </Stack.Navigator>
@@ -127,49 +151,113 @@ function CartStack() {
 
 function WishlistStack() {
   const { darkMode } = useContext(ShopContext);
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: darkMode ? Colors.darkSurface : Colors.lightSurface,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: darkMode ? Colors.darkBorder : Colors.lightBorder,
+        },
+        headerTintColor: darkMode ? Colors.darkText : Colors.lightText,
+        headerTitleStyle: {
+          fontWeight: '700',
         },
       }}
     >
-      <Stack.Screen 
-        name="WishlistScreen" 
-        component={WishlistScreen} 
+      <Stack.Screen
+        name="WishlistScreen"
+        component={WishlistScreen}
         options={{ title: 'My Wishlist' }}
       />
     </Stack.Navigator>
   );
 }
 
+function HelpCenterScreen() {
+  const { darkMode } = useContext(ShopContext);
+  return (
+    <View style={{ flex: 1, padding: 20, backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: darkMode ? Colors.darkText : Colors.lightText, marginBottom: 20 }}>Help Center</Text>
+      <View style={{ gap: 15 }}>
+        <Text style={{ fontSize: 16, color: darkMode ? Colors.darkText : Colors.lightText, fontWeight: '600' }}>1. How to track my order?</Text>
+        <Text style={{ fontSize: 14, color: darkMode ? Colors.darkSubText : Colors.lightSubText }}>You can track your order in the "Order History" section of your profile.</Text>
+
+        <Text style={{ fontSize: 16, color: darkMode ? Colors.darkText : Colors.lightText, fontWeight: '600' }}>2. What is your return policy?</Text>
+        <Text style={{ fontSize: 14, color: darkMode ? Colors.darkSubText : Colors.lightSubText }}>We offer a 30-day return policy for all unused items in their original packaging.</Text>
+
+        <Text style={{ fontSize: 16, color: darkMode ? Colors.darkText : Colors.lightText, fontWeight: '600' }}>3. How can I contact support?</Text>
+        <Text style={{ fontSize: 14, color: darkMode ? Colors.darkSubText : Colors.lightSubText }}>You can reach us at support@onlineshopapp.com or call us at 1-800-SHOP-APP.</Text>
+      </View>
+    </View>
+  );
+}
+
+function AboutAppScreen() {
+  const { darkMode } = useContext(ShopContext);
+  return (
+    <View style={{ flex: 1, padding: 20, alignItems: 'center', backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground }}>
+      <View style={{ backgroundColor: '#FFFFFF', padding: 20, borderRadius: 30, marginBottom: 20, elevation: 5 }}>
+        <Image source={require('../images/logo.png')} style={{ width: 100, height: 100 }} resizeMode="contain" />
+      </View>
+      <Text style={{ fontSize: 28, fontWeight: 'bold', color: darkMode ? Colors.darkText : Colors.lightText }}>OnlineShopApp</Text>
+      <Text style={{ fontSize: 16, color: Colors.primary, marginBottom: 20 }}>Version 1.0.0</Text>
+      <Text style={{ fontSize: 16, color: darkMode ? Colors.darkSubText : Colors.lightSubText, textAlign: 'center', lineHeight: 24 }}>
+        OnlineShopApp is a premium e-commerce platform designed to give you the best shopping experience. We focus on quality, speed, and user-centric design to help you find your favorites effortlessly.
+      </Text>
+      <Text style={{ fontSize: 14, color: darkMode ? Colors.darkSubText : Colors.lightSubText, marginTop: 40 }}>© 2026 OnlineShopApp Team</Text>
+    </View>
+  );
+}
+
 function ProfileStack() {
   const { darkMode, isLogin } = useContext(ShopContext);
-  
+
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
-        contentStyle: {
-          backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: darkMode ? Colors.darkSurface : Colors.lightSurface,
+          elevation: 0,
+          shadowOpacity: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: darkMode ? Colors.darkBorder : Colors.lightBorder,
+        },
+        headerTintColor: darkMode ? Colors.darkText : Colors.lightText,
+        headerTitleStyle: {
+          fontWeight: '700',
         },
       }}
     >
       {isLogin ? (
-        <Stack.Screen 
-          name="ProfileScreen" 
-          component={ProfileScreen} 
-          options={{ title: 'Profile' }}
-        />
+        <>
+          <Stack.Screen
+            name="ProfileScreen"
+            component={ProfileScreen}
+            options={{ title: 'Profile' }}
+          />
+          <Stack.Screen
+            name="HelpCenter"
+            component={HelpCenterScreen}
+            options={{ title: 'Help Center' }}
+          />
+          <Stack.Screen
+            name="AboutApp"
+            component={AboutAppScreen}
+            options={{ title: 'About' }}
+          />
+        </>
       ) : (
         <Stack.Screen
           name="AuthScreen"
           component={AuthScreen}
           initialParams={{ type: 'login' }}
-          options={{ headerShown: false}}
+          options={{ headerShown: false }}
         />
       )}
     </Stack.Navigator>
@@ -178,13 +266,13 @@ function ProfileStack() {
 
 function TabNavigator() {
   const { darkMode, getCartItemCount } = useContext(ShopContext);
-  
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          
+
           if (route.name === 'Search') {
             iconName = 'search';
           } else if (route.name === 'Home') {
@@ -196,7 +284,7 @@ function TabNavigator() {
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
-          
+
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: Colors.primary,
@@ -221,45 +309,45 @@ function TabNavigator() {
           fontSize: 10,
         },
       })}>
-      <Tab.Screen 
-        name="Search" 
-        component={SearchStack} 
+      <Tab.Screen
+        name="Search"
+        component={SearchStack}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             navigation.navigate('Search', { screen: 'SearchScreen' });
           },
         })}
       />
-      <Tab.Screen 
-        name="Wishlist" 
-        component={WishlistStack} 
+      <Tab.Screen
+        name="Wishlist"
+        component={WishlistStack}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             navigation.navigate('Wishlist', { screen: 'WishlistScreen' });
           },
         })}
       />
-      <Tab.Screen 
-        name="Home" 
-        component={HomeStack} 
+      <Tab.Screen
+        name="Home"
+        component={HomeStack}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             navigation.navigate('Home', { screen: 'HomeScreen' });
           },
         })}
       />
-      <Tab.Screen 
-        name="Cart" 
-        component={CartStack} 
+      <Tab.Screen
+        name="Cart"
+        component={CartStack}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             navigation.navigate('Cart', { screen: 'CartScreen' });
           },
         })}
       />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileStack} 
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStack}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             // ProfileStack handles AuthScreen/ProfileScreen based on isLogin
@@ -306,10 +394,10 @@ function SplashScreen({ onFinish }) {
     <View style={[styles.splashContainer, { backgroundColor: darkMode ? Colors.darkBackground : Colors.lightBackground }]}>
       <Animated.View style={[styles.splashContent, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
         <View style={styles.splashLogoContainer}>
-          <Image 
-            source={require('../images/logo.png')} 
-            style={styles.splashLogo} 
-            resizeMode="contain" 
+          <Image
+            source={require('../images/logo.png')}
+            style={styles.splashLogo}
+            resizeMode="contain"
           />
         </View>
         <Text style={[styles.splashTitle, { color: darkMode ? Colors.darkText : Colors.lightText }]}>
@@ -330,8 +418,8 @@ function AppContent() {
   if (showSplash) {
     return (
       <>
-        <StatusBar 
-          barStyle={darkMode ? 'light-content' : 'dark-content'} 
+        <StatusBar
+          barStyle={darkMode ? 'light-content' : 'dark-content'}
           backgroundColor={darkMode ? Colors.darkBackground : Colors.lightBackground}
         />
         <SplashScreen onFinish={() => setShowSplash(false)} />
@@ -341,8 +429,8 @@ function AppContent() {
 
   return (
     <>
-      <StatusBar 
-        barStyle={darkMode ? 'light-content' : 'dark-content'} 
+      <StatusBar
+        barStyle={darkMode ? 'light-content' : 'dark-content'}
         backgroundColor={darkMode ? Colors.darkSurface : Colors.lightSurface}
       />
       <NavigationContainer theme={darkMode ? CustomDarkTheme : CustomLightTheme}>

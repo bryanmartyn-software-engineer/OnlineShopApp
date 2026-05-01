@@ -59,7 +59,7 @@ export default function ProfileScreen({ navigation }) {
 
         <View style={styles.statsGrid}>
           {stats.map((stat, index) => (
-            <TouchableOpacity  activeOpacity={0.8} key={index} style={[styles.statButton, darkMode && styles.darkButton]}
+            <TouchableOpacity activeOpacity={0.8} key={index} style={[styles.statButton, darkMode && styles.darkButton]}
               onPress={() => navigation.navigate(stat.navigate)} disabled={!stat.navigate}>
               <View style={[styles.statCard]}>
                 <View style={[styles.statIconContainer, { backgroundColor: `${stat.color}15` }]}>
@@ -75,19 +75,19 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
           ))}
         </View>
-          
+
         <View style={[styles.section, darkMode && styles.darkSection]}>
           <Text style={[styles.sectionTitle, darkMode && styles.darkSubText]}>
             Preferences
           </Text>
-          
+
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
               <View style={[styles.iconContainer, { backgroundColor: 'rgba(201, 155, 105, 0.1)' }]}>
-                <MaterialIcons 
-                  name={darkMode ? 'dark-mode' : 'light-mode'} 
-                  size={20} 
-                  color={Colors.primary} 
+                <MaterialIcons
+                  name={darkMode ? 'dark-mode' : 'light-mode'}
+                  size={20}
+                  color={Colors.primary}
                 />
               </View>
               <View>
@@ -112,8 +112,8 @@ export default function ProfileScreen({ navigation }) {
           <Text style={[styles.sectionTitle, darkMode && styles.darkSubText]}>
             Account
           </Text>
-          
-          <TouchableOpacity style={styles.menuItem} 
+
+          <TouchableOpacity style={styles.menuItem}
             onPress={() => navigation.navigate('AuthScreen', { type: 'edit' })}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="person-outline" size={22} color={Colors.primary} />
@@ -160,7 +160,7 @@ export default function ProfileScreen({ navigation }) {
             Support
           </Text>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('HelpCenter')}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="help-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
@@ -170,7 +170,7 @@ export default function ProfileScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={22} color={darkMode ? '#888' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('AboutApp')}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="info-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>

@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 15,
     width: '48%',
+    height: 260, // Match home screen alignment
     shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,

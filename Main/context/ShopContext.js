@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ShopContext = createContext();
 
@@ -14,24 +15,53 @@ export const ShopProvider = ({ children }) => {
   const BASE_URL = 'http://10.0.2.2:5000';
   const API_URL = `${BASE_URL}/api`;
 
+  // Persistence: Load settings and auth on startup
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const savedDarkMode = await AsyncStorage.getItem('darkMode');
+        if (savedDarkMode !== null) {
+          setDarkMode(JSON.parse(savedDarkMode));
+        }
+
+        const savedUserData = await AsyncStorage.getItem('userData');
+        if (savedUserData !== null) {
+          const user = JSON.parse(savedUserData);
+          setUserData(user);
+          setIsLogin(true);
+          // Fetch their cart/wishlist from server
+          fetchUserData(user.userId);
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+    };
+    loadSettings();
+  }, []);
+
+  // Persistence: Save darkMode changes
+  useEffect(() => {
+    AsyncStorage.setItem('darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
+
   // Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(`${API_URL}/products`);
         const data = await response.json();
-        
+
         const mappedProducts = data.map(p => ({
           id: p.productId.toString(),
           name: p.productName,
           price: p.productPrice,
           category: p.category.split(',')[0],
           description: p.productDesc,
-          image: p.activeThumbnail, 
+          image: p.activeThumbnail,
           rating: (p.popularity / 2).toFixed(1),
           stock: p.stockQuantity,
         }));
-        
+
         setProducts(mappedProducts);
         setLoading(false);
       } catch (error) {
@@ -39,7 +69,7 @@ export const ShopProvider = ({ children }) => {
         setLoading(false);
       }
     };
-    
+
     fetchProducts();
   }, []);
 
@@ -49,23 +79,23 @@ export const ShopProvider = ({ children }) => {
       // Fetch Cart
       const cartResponse = await fetch(`${API_URL}/carts/${userId}`);
       const cartData = await cartResponse.json();
-      
+
       // Map cart items to full product objects
       const fullCart = cartData.map(item => {
         const product = products.find(p => p.id === item.productId.toString());
         return product ? { ...product, quantity: item.quantity } : null;
       }).filter(item => item !== null);
-      
+
       setCart(fullCart);
 
       // Fetch Wishlist
       const wishlistResponse = await fetch(`${API_URL}/wishlist/${userId}`);
       const wishlistData = await wishlistResponse.json();
-      
+
       const fullWishlist = wishlistData.map(item => {
         return products.find(p => p.id === item.productId.toString());
       }).filter(item => item !== undefined);
-      
+
       setWishlist(fullWishlist);
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -81,20 +111,20 @@ export const ShopProvider = ({ children }) => {
           await fetch(`${API_URL}/carts`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              userId: userData.userId, 
-              productId: parseInt(product.id), 
-              quantity: existingItem.quantity + quantity 
+            body: JSON.stringify({
+              userId: userData.userId,
+              productId: parseInt(product.id),
+              quantity: existingItem.quantity + quantity
             }),
           });
         } else {
           await fetch(`${API_URL}/carts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              userId: userData.userId, 
-              productId: parseInt(product.id), 
-              quantity 
+            body: JSON.stringify({
+              userId: userData.userId,
+              productId: parseInt(product.id),
+              quantity
             }),
           });
         }
@@ -143,10 +173,10 @@ export const ShopProvider = ({ children }) => {
         await fetch(`${API_URL}/carts`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            userId: userData.userId, 
-            productId: parseInt(productId), 
-            quantity: newQuantity 
+          body: JSON.stringify({
+            userId: userData.userId,
+            productId: parseInt(productId),
+            quantity: newQuantity
           }),
         });
       } catch (error) {
@@ -220,18 +250,20 @@ export const ShopProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setIsLogin(true);
         const userResponse = await fetch(`${API_URL}/users/${data.userId}`);
         const userFullData = await userResponse.json();
         setUserData(userFullData);
-        
+        // Save to AsyncStorage
+        await AsyncStorage.setItem('userData', JSON.stringify(userFullData));
+
         // Fetch saved cart and wishlist
         await fetchUserData(data.userId);
-        
+
         return { success: true };
       } else {
         return { success: false, error: data.error };
@@ -248,7 +280,7 @@ export const ShopProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-      
+
       const checkData = await checkResponse.json();
       if (!checkResponse.ok) return { success: false, error: checkData.error };
 
@@ -257,9 +289,9 @@ export const ShopProvider = ({ children }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
       });
-      
+
       const data = await response.json();
-      
+
       if (response.ok) {
         setIsLogin(true);
         setUserData({ userId: data.userId, name, email });
@@ -277,6 +309,7 @@ export const ShopProvider = ({ children }) => {
     setUserData(null);
     setCart([]);
     setWishlist([]);
+    AsyncStorage.removeItem('userData');
   };
 
   return (
