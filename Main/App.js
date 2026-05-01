@@ -245,7 +245,7 @@ function ProfileStack() {
             options={{ title: 'Profile' }}
           />
           <Stack.Screen
-            name="AuthScreen"
+            name="EditProfile"
             component={AuthScreen}
             options={{ headerShown: false }}
           />
@@ -277,7 +277,7 @@ function ProfileStack() {
         </>
       ) : (
         <Stack.Screen
-          name="AuthScreen"
+          name="Login"
           component={AuthScreen}
           initialParams={{ type: 'login' }}
           options={{ headerShown: false }}

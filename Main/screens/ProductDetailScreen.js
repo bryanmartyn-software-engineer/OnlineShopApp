@@ -19,7 +19,10 @@ export default function ProductDetailScreen({ route, navigation }) {
 
 const handleAddToCart = () => {
     if (!isLogin) {
-      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+      return navigation.navigate('Profile', { 
+        screen: 'Login', 
+        params: { returnTo: 'ProductDetail', returnToParams: { product } } 
+      });
     }
     addToCart(product, quantity);
     Alert.alert(
@@ -34,7 +37,10 @@ const handleAddToCart = () => {
 
   const incrementQuantity = () => {
     if (!isLogin) {
-      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+      return navigation.navigate('Profile', { 
+        screen: 'Login', 
+        params: { returnTo: 'ProductDetail', returnToParams: { product } } 
+      });
     }
     if (quantity < product.stock) {
       setQuantity(prev => prev + 1);
@@ -43,7 +49,10 @@ const handleAddToCart = () => {
 
   const decrementQuantity = () => {
     if (!isLogin) {
-      return navigation.navigate('Profile', { screen: 'AuthScreen' });
+      return navigation.navigate('Profile', { 
+        screen: 'Login', 
+        params: { returnTo: 'ProductDetail', returnToParams: { product } } 
+      });
     }
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
@@ -74,7 +83,10 @@ const handleAddToCart = () => {
           </Text>
           <TouchableOpacity onPress={() => 
             {if (!isLogin) {
-              return navigation.navigate('Profile', { screen: 'AuthScreen' });
+              return navigation.navigate('Profile', { 
+                screen: 'Login', 
+                params: { returnTo: 'ProductDetail', returnToParams: { product } } 
+              });
             }
             else
             toggleWishlist(product)}}>

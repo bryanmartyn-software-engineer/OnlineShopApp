@@ -114,7 +114,7 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <TouchableOpacity style={styles.menuItem}
-            onPress={() => navigation.navigate('AuthScreen', { type: 'edit' })}>
+            onPress={() => navigation.navigate('EditProfile', { type: 'edit' })}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="person-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>

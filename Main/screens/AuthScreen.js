@@ -131,8 +131,12 @@ export default function AuthScreen({ route, navigation }) {
         if (result && result.success) {
             if (type === 'edit') {
                 navigation.goBack();
+            } else if (route.params?.returnTo) {
+                navigation.navigate(route.params.returnTo, route.params.returnToParams || {});
+            } else {
+                // For login/registration, explicitly navigate to ProfileScreen to ensure stack update
+                navigation.navigate('ProfileScreen');
             }
-            // For login/registration, App.js will switch AuthScreen -> ProfileScreen automatically
         } else {
             setError(result?.error || 'Authentication failed');
         }
@@ -143,7 +147,7 @@ export default function AuthScreen({ route, navigation }) {
             <TouchableOpacity
                 onPress={() => {
                     if (type === 'registration') {
-                        navigation.replace('AuthScreen', { type: 'login' });
+                        navigation.replace('Login', { type: 'login' });
                     } else if (isLogin) {
                         navigation.goBack();
                     } else {
@@ -321,7 +325,7 @@ export default function AuthScreen({ route, navigation }) {
                             </Text>
                             <TouchableOpacity style={styles.link} onPress={() => {
                                 setAuth({});
-                                navigation.replace('AuthScreen', {
+                                navigation.replace('Login', {
                                     type: type === 'login' ? 'registration'
                                         : 'login'
                                 });

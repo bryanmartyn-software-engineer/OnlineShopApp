@@ -87,8 +87,8 @@ export default function WishlistScreen({ navigation }) {
           <TouchableOpacity
             style={styles.loginButton}
             onPress={() => navigation.navigate('Profile', {
-              screen: 'AuthScreen',
-              params: { type: 'login' }
+              screen: 'Login',
+              params: { type: 'login', returnTo: 'WishlistScreen' }
             })}
           >
             <Text style={styles.loginButtonText}>Login</Text>

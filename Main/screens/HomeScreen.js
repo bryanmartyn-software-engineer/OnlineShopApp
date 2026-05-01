@@ -39,7 +39,10 @@ export default function HomeScreen({ navigation }) {
           style={styles.wishlistIcon}
           onPress={() => {
             if (!isLogin) {
-              return navigation.navigate('Profile', { screen: 'AuthScreen' });
+              return navigation.navigate('Profile', { 
+                screen: 'Login',
+                params: { returnTo: 'HomeScreen' }
+              });
             }
             toggleWishlist(item);
           }}
