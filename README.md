@@ -1,211 +1,117 @@
-# 🛍️ Online Shop App – React Native
+# 🛍️ OnlineShopApp
 
-A modern, feature-rich e-commerce mobile application built with React Native.  
-This app provides a complete shopping experience including product browsing, cart management, wishlist functionality, and dark mode support.
+<p align="center">
+  <img src="images/logo.png" width="200" alt="OnlineShopApp Logo" />
+</p>
+
+**OnlineShopApp** is a premium, feature-rich e-commerce mobile application built with React Native. It offers a seamless, modern shopping experience with a focus on high-end aesthetics, smooth animations, and robust backend synchronization.
 
 ---
 
 ## ✨ Features
 
-- 🛒 Product Listing – Browse products with search and category filtering  
-- 📄 Product Details – View detailed product information with quantity selector  
-- 🛍️ Shopping Cart – Add/remove items, update quantities, and view totals  
-- ❤️ Wishlist – Save favorite products for later  
-- 🌙 Dark Mode – Seamless dark/light theme switching  
-- 👤 Profile Screen – View stats and manage preferences  
-- 🔔 Real-time Updates – Cart badge updates instantly  
+### 🎨 Premium User Experience
+- **Modern UI/UX**: Designed with glassmorphism, smooth gradients, and micro-animations for a high-end feel.
+- **Dynamic Dark Mode**: Fully integrated dark and light themes that switch seamlessly across the entire app.
+- **Animated Splash Screen**: A branded, interactive entrance that sets the tone for the experience.
+
+### 🛒 Complete Shopping Flow
+- **Smart Product Discovery**: Browse by curated categories, search in real-time, and view featured products.
+- **Interactive Product Details**: Deep-dive into product info, manage quantities, and see stock status.
+- **Robust Cart Management**: Real-time cart updates with backend synchronization and badge indicators.
+- **Wishlist Support**: Save favorites for later with easy one-tap access.
+
+### 🔐 Advanced Authentication
+- **Smart Redirect Logic**: If you're prompted to log in while browsing (e.g., trying to favorite an item), the app remembers your context and returns you exactly where you were after a successful login.
+- **Secure Sessions**: Persistent user state managed via React Context and a dedicated backend.
+
+### 👤 Comprehensive Profile
+- **Account Management**: View shopping statistics, manage shipping addresses, and save payment methods.
+- **Order History**: Track your past purchases with detailed order summaries.
+- **Help & Support**: Integrated help center and "About" sections.
 
 ---
 
-## 📱 Screenshots
+## 🛠️ Technology Stack
 
-Screenshots will be added here.
-
----
-
-# 🚀 Getting Started
-
-## ✅ Prerequisites
-
-Make sure you have the following installed:
-
-- Node.js (v14 or newer)
-- npm or yarn
-- React Native CLI  
-  npm install -g react-native-cli
-- Android Studio (for Android)
-- Xcode (for iOS – macOS only)
-- iOS Simulator or Android Emulator
-
-> ⚠️ Ensure you have completed the official React Native Environment Setup before proceeding.
+- **Frontend**: 
+  - [React Native](https://reactnative.dev/) (Cross-platform iOS/Android)
+  - [React Navigation](https://reactnavigation.org/) (Stack & Bottom Tab navigation)
+  - [Context API](https://reactjs.org/docs/context.html) (Global State Management)
+  - [Vector Icons](https://github.com/oblador/react-native-vector-icons) (Material Icons & more)
+- **Backend**:
+  - [Node.js](https://nodejs.org/) & [Express](https://expressjs.com/)
+  - [SQLite](https://www.sqlite.org/) (Data Persistence)
+  - [Socket.io](https://socket.io/) (Real-time events)
 
 ---
 
-## 📦 Step 1: Install Dependencies
+## 🚀 Getting Started
 
-From the project root directory:
+### Prerequisites
+- Node.js (v18+)
+- Android Studio / Xcode
+- React Native CLI
 
-Using npm:
-```
+### 1. Installation
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/OnlineShopApp.git
+
+# Install dependencies
 npm install
+
+# iOS only: Install pods
+cd ios && pod install && cd ..
 ```
 
-Using Yarn:
-```
-yarn install
-```
-
-### For iOS Only
-```
-cd ios
-pod install
-cd ..
+### 2. Running the Backend
+```bash
+cd backend
+node service.js
 ```
 
----
-
-## 🔥 Step 2: Start the Metro Server
-
-Using npm:
-```
+### 3. Running the App
+```bash
+# Start Metro bundler
 npm start
-```
 
-Using Yarn:
-```
-yarn start
-```
-
-To clear cache:
-```
-npm start -- --reset-cache
-```
-
----
-
-## ▶️ Step 3: Run the Application
-
-Keep Metro running in one terminal, then open a new terminal in the project root.
-
-### 🤖 Run on Android
-Using npm:
-```
+# Run on Android
 npm run android
-```
 
-Using Yarn:
-```
-yarn android
-```
-
-### 🍎 Run on iOS
-Using npm:
-```
+# Run on iOS
 npm run ios
 ```
 
-Using Yarn:
-```
-yarn ios
-```
-
-If everything is set up correctly, the app should launch in your emulator/simulator.
-
 ---
 
-# 📦 Dependencies
+## 📂 Project Structure
 
-```json
-{
-  "react-native-vector-icons": "^10.0.0",
-  "@react-navigation/native": "^6.1.7",
-  "@react-navigation/bottom-tabs": "^6.5.8",
-  "@react-navigation/native-stack": "^6.9.13",
-  "react-native-screens": "^3.22.1",
-  "react-native-safe-area-context": "^4.7.1",
-  "react-native-gesture-handler": "^2.12.0"
-}
-```
-
----
-
-# 🏗 Project Structure
-
-```
+```text
 OnlineShopApp/
-├── context/
-│   └── ShopContext.js
-├── screens/
-│   ├── HomeScreen.js
-│   ├── ProductDetailScreen.js
-│   ├── CartScreen.js
-│   ├── WishlistScreen.js
-│   └── ProfileScreen.js
-└── App.js
+├── Main/
+│   ├── context/        # ShopContext.js (Global State)
+│   ├── screens/        # UI Screens (Home, Profile, Cart, etc.)
+│   ├── styles/         # Global colors and theme tokens
+│   └── App.js          # Main entry point & Navigation
+├── backend/
+│   ├── routes/         # API Endpoints (Auth, Cart, Orders)
+│   ├── createDatabase.js # DB Schema & Initialization
+│   └── service.js      # Express Server
+├── images/             # Local assets & App Logo
+└── index.js            # React Native entry
 ```
 
 ---
 
-# 🎯 How to Use the App
-
-## 🏠 Home Screen
-- Browse all products  
-- Search using the search bar  
-- Filter by category  
-- Tap a product to view details  
-- Tap ❤️ to add/remove from wishlist  
-
-## 📄 Product Details
-- View full description  
-- Adjust quantity using + and -  
-- Check stock availability  
-- Tap Add to Cart  
-
-## 🛍️ Cart Screen
-- Review cart items  
-- Modify quantity  
-- Remove items  
-- View subtotal and total  
-- Demo checkout button  
-
-## ❤️ Wishlist Screen
-- View saved products  
-- Add directly to cart  
-- Remove from wishlist  
-
-## 👤 Profile Screen
-- View shopping statistics  
-- Toggle dark mode  
-- Access demo account settings  
+## 📝 Roadmap
+- [ ] Integration with real Payment Gateways (Stripe/PayPal)
+- [ ] Push Notifications for order updates
+- [ ] Product reviews and rating system
+- [ ] Multi-language support (i18n)
 
 ---
 
-# 🎨 Customization
-
-Modify main app:
-```
-App.js
-```
-
-Modify screens:
-```
-../screens/
-```
-
-Modify global state:
-```
-../context/ShopContext.js
-```
-
----
-
-# 🔄 Reloading the App
-
-### Android
-- Press R twice  
-- OR open Developer Menu:
-  - Ctrl + M (Windows/Linux)
-  - Cmd ⌘ + M (macOS)
-
-### iOS
-- Press Cmd ⌘ + R in the iOS Simulator
+<p align="center">
+  Built with ❤️ by the OnlineShopApp Team
+</p>
