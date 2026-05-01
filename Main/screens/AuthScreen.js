@@ -6,7 +6,7 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    FlatList, 
+    FlatList,
     ActivityIndicator,
     Image
 } from 'react-native';
@@ -21,7 +21,7 @@ const InputWithLabel = (props) => {
 
     let showError = touched && !props.validateRule;
     const isPassword = props.secureTextEntry;
-    
+
     return (
         <View style={styles.section}>
             <Text style={[styles.label, darkMode && styles.darkLabel]}>
@@ -72,9 +72,9 @@ const InputWithLabel = (props) => {
     );
 };
 
-export default function AuthScreen({ route, navigation }){
+export default function AuthScreen({ route, navigation }) {
     const { darkMode, isLogin, login, register } = useContext(ShopContext);
-    const {type} = route.params;
+    const { type } = route.params;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [auth, setAuth] = useState({
@@ -82,7 +82,7 @@ export default function AuthScreen({ route, navigation }){
         email: '',
         password: '',
         confirmPassword: ''
-    });  
+    });
     // login:{email,password},
     // registration:{name,email,password,confirmPassword}
     // verify:{password}
@@ -116,7 +116,7 @@ export default function AuthScreen({ route, navigation }){
     const checkAuth = async () => {
         setLoading(true);
         setError('');
-        
+
         let result;
         if (type === 'login') {
             result = await login(auth.email, auth.password);
@@ -131,19 +131,31 @@ export default function AuthScreen({ route, navigation }){
             setError(result?.error || 'Authentication failed');
         }
     }
-    
+
     return (
         <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
             <TouchableOpacity
-                onPress={() => isLogin ? navigation.goBack() : navigation.navigate('Home')}
-                style={[styles.back, darkMode && styles.darkBack]}>
-                <Text style={styles.backText}>{'<'} Back</Text>
+                onPress={() => {
+                    if (type === 'registration') {
+                        navigation.replace('AuthScreen', { type: 'login' });
+                    } else if (isLogin) {
+                        navigation.goBack();
+                    } else {
+                        navigation.navigate('Home');
+                    }
+                }}
+                style={[styles.backButton, darkMode && styles.darkBackButton]}>
+                <MaterialIcons
+                    name="arrow-back"
+                    size={24}
+                    color={darkMode ? Colors.darkText : Colors.lightText}
+                />
             </TouchableOpacity>
             <View style={styles.section}>
                 <View style={styles.header}>
                     <View style={styles.logoContainer}>
-                        <Image 
-                            source={require('../../images/logo.png')} 
+                        <Image
+                            source={require('../../images/logo.png')}
                             style={styles.logo}
                             resizeMode="contain"
                         />
@@ -153,152 +165,154 @@ export default function AuthScreen({ route, navigation }){
                         <Text style={[styles.taglineText, darkMode && styles.darkSubText]}>Your shop, your favorites.</Text>
                     </View>
                 </View>
-                
+
                 <View style={styles.title}>
                     <Text style={[styles.formTitle, darkMode && styles.darkTitleText]}>
                         {
-                            type === 'login' ? 'Welcome Back!' 
-                            : type === 'registration' ? 'Create Account'
-                            : type === 'verify' ? 'Verify Account'
-                            : type === 'edit' && 'Edit Profile'
+                            type === 'login' ? 'Welcome Back!'
+                                : type === 'registration' ? 'Create Account'
+                                    : type === 'verify' ? 'Verify Account'
+                                        : type === 'edit' && 'Edit Profile'
                         }
                     </Text>
                     {error ? <Text style={styles.errorText}>{error}</Text> : null}
                 </View>
                 {
                     type === 'login' ?
-                    (
-                        <View style={styles.form}>
-                            <InputWithLabel
-                                label={'Email'}
-                                keyboardType='email-address'
-                                placeholder='Enter your email'
-                                value={auth.email}
-                                autoComplete="email"        
-                                onChangeText={(value) => setAuth(auth => ({...auth,email:value}))}
-                                validateRule={!!auth.email && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email)}
-                                message='Please enter a valid email address.'
-                            />
-                            <InputWithLabel
-                                label={'Password'}
-                                secureTextEntry
-                                placeholder='Enter your password'
-                                value={auth.password}
-                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
-                                validateRule={!!auth.password && auth.password.length >= 8}
-                                message='The password should contain at least 8 characters.'
-                            />
+                        (
+                            <View style={styles.form}>
+                                <InputWithLabel
+                                    label={'Email'}
+                                    keyboardType='email-address'
+                                    placeholder='Enter your email'
+                                    value={auth.email}
+                                    autoComplete="email"
+                                    onChangeText={(value) => setAuth(auth => ({ ...auth, email: value }))}
+                                    validateRule={!!auth.email && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email)}
+                                    message='Please enter a valid email address.'
+                                />
+                                <InputWithLabel
+                                    label={'Password'}
+                                    secureTextEntry
+                                    placeholder='Enter your password'
+                                    value={auth.password}
+                                    onChangeText={(value) => setAuth(auth => ({ ...auth, password: value }))}
+                                    validateRule={!!auth.password && auth.password.length >= 8}
+                                    message='The password should contain at least 8 characters.'
+                                />
 
-                        </View>
-                    ) : type === 'registration' ?
-                    (
-                        <View style={styles.form}>
-                            <InputWithLabel
-                                label={'Email'}
-                                keyboardType='email-address'
-                                placeholder='Enter your email'
-                                value={auth.email}
-                                onChangeText={(value) => setAuth(auth => ({...auth,email:value}))}
-                                validateRule={!!auth.email && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email)}
-                                message='Please enter a valid email address.'
-                            />
-                            <InputWithLabel
-                                label={'Name'}
-                                keyboardType='default'
-                                placeholder='Enter your username'
-                                value={auth.name}
-                                onChangeText={(value) => setAuth(auth => ({...auth,name:value}))}
-                                validateRule={!!auth.name && auth.name.length >= 1}
-                                message='Username should be at least 1 character long.'
-                            />
-                            <InputWithLabel
-                                label={'Password'}
-                                secureTextEntry
-                                placeholder='Enter your password'
-                                value={auth.password}
-                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
-                                validateRule={!!auth.password && auth.password.length >= 8}
-                                message='The password should contain at least 8 characters.'
-                            />
-                            <InputWithLabel
-                                label={'Confirm Password'}
-                                secureTextEntry
-                                placeholder='Enter your password'
-                                value={auth.confirmPassword}
-                                onChangeText={(value) => setAuth(auth => ({...auth,confirmPassword:value}))}
-                                validateRule={auth.confirmPassword && auth.password === auth.confirmPassword}
-                                message='Passwords do not match.'
-                            />
-                        </View>
-                    ) : type === 'verify' ?
-                    (
-                        <View style={styles.form}>
-                            <InputWithLabel
-                                label={'Password'}
-                                secureTextEntry
-                                placeholder='Enter your password'
-                                value={auth.password}
-                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
-                                validateRule={!!auth.password && auth.password.length >= 8}
-                                message='The password should contain at least 8 characters.'
-                            />
-                        </View>
-                    ) : type === 'edit' &&
-                    (
-                        <View style={styles.form}>
-                            <InputWithLabel
-                                label={'Name'}
-                                keyboardType='default'
-                                placeholder='Enter your username'
-                                value={auth.name}
-                                onChangeText={(value) => setAuth(auth => ({...auth,name:value}))}
-                                validateRule={!!auth.name && auth.name.length >= 1}
-                                message='Username should be at least 1 character long.'
-                            />
-                            <InputWithLabel
-                                label={'Password'}
-                                secureTextEntry
-                                placeholder='Enter your password'
-                                value={auth.password}
-                                onChangeText={(value) => setAuth(auth => ({...auth,password:value}))}
-                                validateRule={!!auth.password && auth.password.length >= 8}
-                                message='The password should contain at least 8 characters.'
-                            />
-                        </View>
-                    )
+                            </View>
+                        ) : type === 'registration' ?
+                            (
+                                <View style={styles.form}>
+                                    <InputWithLabel
+                                        label={'Email'}
+                                        keyboardType='email-address'
+                                        placeholder='Enter your email'
+                                        value={auth.email}
+                                        onChangeText={(value) => setAuth(auth => ({ ...auth, email: value }))}
+                                        validateRule={!!auth.email && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(auth.email)}
+                                        message='Please enter a valid email address.'
+                                    />
+                                    <InputWithLabel
+                                        label={'Name'}
+                                        keyboardType='default'
+                                        placeholder='Enter your username'
+                                        value={auth.name}
+                                        onChangeText={(value) => setAuth(auth => ({ ...auth, name: value }))}
+                                        validateRule={!!auth.name && auth.name.length >= 1}
+                                        message='Username should be at least 1 character long.'
+                                    />
+                                    <InputWithLabel
+                                        label={'Password'}
+                                        secureTextEntry
+                                        placeholder='Enter your password'
+                                        value={auth.password}
+                                        onChangeText={(value) => setAuth(auth => ({ ...auth, password: value }))}
+                                        validateRule={!!auth.password && auth.password.length >= 8}
+                                        message='The password should contain at least 8 characters.'
+                                    />
+                                    <InputWithLabel
+                                        label={'Confirm Password'}
+                                        secureTextEntry
+                                        placeholder='Enter your password'
+                                        value={auth.confirmPassword}
+                                        onChangeText={(value) => setAuth(auth => ({ ...auth, confirmPassword: value }))}
+                                        validateRule={auth.confirmPassword && auth.password === auth.confirmPassword}
+                                        message='Passwords do not match.'
+                                    />
+                                </View>
+                            ) : type === 'verify' ?
+                                (
+                                    <View style={styles.form}>
+                                        <InputWithLabel
+                                            label={'Password'}
+                                            secureTextEntry
+                                            placeholder='Enter your password'
+                                            value={auth.password}
+                                            onChangeText={(value) => setAuth(auth => ({ ...auth, password: value }))}
+                                            validateRule={!!auth.password && auth.password.length >= 8}
+                                            message='The password should contain at least 8 characters.'
+                                        />
+                                    </View>
+                                ) : type === 'edit' &&
+                                (
+                                    <View style={styles.form}>
+                                        <InputWithLabel
+                                            label={'Name'}
+                                            keyboardType='default'
+                                            placeholder='Enter your username'
+                                            value={auth.name}
+                                            onChangeText={(value) => setAuth(auth => ({ ...auth, name: value }))}
+                                            validateRule={!!auth.name && auth.name.length >= 1}
+                                            message='Username should be at least 1 character long.'
+                                        />
+                                        <InputWithLabel
+                                            label={'Password'}
+                                            secureTextEntry
+                                            placeholder='Enter your password'
+                                            value={auth.password}
+                                            onChangeText={(value) => setAuth(auth => ({ ...auth, password: value }))}
+                                            validateRule={!!auth.password && auth.password.length >= 8}
+                                            message='The password should contain at least 8 characters.'
+                                        />
+                                    </View>
+                                )
                 }
             </View>
             <View style={styles.section}>
-                <TouchableOpacity style={[styles.button, (!isAuth || loading) && { opacity: 0.5 }]} 
-                    disabled={!isAuth || loading} onPress={ checkAuth } >
+                <TouchableOpacity style={[styles.button, (!isAuth || loading) && { opacity: 0.5 }]}
+                    disabled={!isAuth || loading} onPress={checkAuth} >
                     {loading ? (
                         <ActivityIndicator color="#FFF" />
                     ) : (
                         <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 20 }}>
-                            { 
+                            {
                                 type === 'login' ? 'Login'
-                                : type === 'registration' ? 'Register'
-                                : type === 'verify' ? 'Verify Account'
-                                : type === 'edit' && 'Save Changes'
+                                    : type === 'registration' ? 'Register'
+                                        : type === 'verify' ? 'Verify Account'
+                                            : type === 'edit' && 'Save Changes'
                             }
                         </Text>
                     )}
                 </TouchableOpacity>
                 {
-                    (type === 'login' || type === 'registration') && 
+                    (type === 'login' || type === 'registration') &&
                     (
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                            <Text style={{fontSize:16, color: darkMode ? Colors.darkText : Colors.lightText}}>
-                                { type === 'login' ? 'Don\'t have an account? ' 
+                            <Text style={{ fontSize: 16, color: darkMode ? Colors.darkText : Colors.lightText }}>
+                                {type === 'login' ? 'Don\'t have an account? '
                                     : 'Already have an account? '}
                             </Text>
                             <TouchableOpacity style={styles.link} onPress={() => {
                                 setAuth({});
-                                navigation.replace('AuthScreen', { type: type === 'login' ? 'registration' 
-                                    : 'login' });
+                                navigation.replace('AuthScreen', {
+                                    type: type === 'login' ? 'registration'
+                                        : 'login'
+                                });
                             }}>
                                 <Text style={styles.textButton}>
-                                    {type === 'login' ? 'Create Account' 
+                                    {type === 'login' ? 'Create Account'
                                         : 'Login'}
                                 </Text>
                             </TouchableOpacity>
@@ -311,7 +325,7 @@ export default function AuthScreen({ route, navigation }){
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         backgroundColor: Colors.lightBackground,
         paddingHorizontal: 20,
@@ -320,15 +334,25 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.darkBackground,
     },
 
-    back: {
-        marginTop: 10,
-        marginBottom: 10,
+    backButton: {
+        marginTop: 20,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        backgroundColor: Colors.lightSurface,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        borderWidth: 1,
+        borderColor: Colors.lightBorder,
     },
-
-    backText:{
-        color: Colors.primary,
-        fontWeight: 'bold',
-        fontSize: 20,
+    darkBackButton: {
+        backgroundColor: Colors.darkSurface,
+        borderColor: Colors.darkBorder,
     },
 
     section: {
@@ -396,7 +420,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
     },
 
-    darkTitleText:{
+    darkTitleText: {
         color: Colors.darkText
     },
 

@@ -80,23 +80,34 @@ export const ShopProvider = ({ children }) => {
       const cartResponse = await fetch(`${API_URL}/carts/${userId}`);
       const cartData = await cartResponse.json();
 
-      // Map cart items to full product objects
-      const fullCart = cartData.map(item => {
+      // Map cart items and merge duplicates
+      const mergedCart = [];
+      cartData.forEach(item => {
         const product = products.find(p => p.id === item.productId.toString());
-        return product ? { ...product, quantity: item.quantity } : null;
-      }).filter(item => item !== null);
-
-      setCart(fullCart);
+        if (product) {
+          const existing = mergedCart.find(p => p.id === product.id);
+          if (existing) {
+            existing.quantity += item.quantity;
+          } else {
+            mergedCart.push({ ...product, quantity: item.quantity });
+          }
+        }
+      });
+      setCart(mergedCart);
 
       // Fetch Wishlist
       const wishlistResponse = await fetch(`${API_URL}/wishlist/${userId}`);
       const wishlistData = await wishlistResponse.json();
 
-      const fullWishlist = wishlistData.map(item => {
-        return products.find(p => p.id === item.productId.toString());
-      }).filter(item => item !== undefined);
-
-      setWishlist(fullWishlist);
+      // Map wishlist and remove duplicates
+      const uniqueWishlist = [];
+      wishlistData.forEach(item => {
+        const product = products.find(p => p.id === item.productId.toString());
+        if (product && !uniqueWishlist.find(p => p.id === product.id)) {
+          uniqueWishlist.push(product);
+        }
+      });
+      setWishlist(uniqueWishlist);
     } catch (error) {
       console.error('Error fetching user data:', error);
     }

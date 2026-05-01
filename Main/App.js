@@ -74,10 +74,7 @@ function SearchStack() {
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
-        options={({ route }) => ({
-          title: route.params?.product?.name || 'Product Details',
-          headerBackTitle: 'Back',
-        })}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -111,10 +108,7 @@ function HomeStack() {
       <Stack.Screen
         name="ProductDetail"
         component={ProductDetailScreen}
-        options={({ route }) => ({
-          title: route.params?.product?.name || 'Product Details',
-          headerBackTitle: 'Back',
-        })}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
@@ -269,6 +263,7 @@ function TabNavigator() {
 
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
