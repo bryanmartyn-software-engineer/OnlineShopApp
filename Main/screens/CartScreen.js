@@ -7,9 +7,11 @@ import {
   StyleSheet,
   Alert,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
+import { Colors } from '../styles/colors';
 
 export default function CartScreen({ navigation }) {
   const {
@@ -20,6 +22,7 @@ export default function CartScreen({ navigation }) {
     clearCart,
     getCartTotal,
     isLogin,
+    BASE_URL,
   } = useContext(ShopContext);
 
   const handleCheckout = () => {
@@ -53,49 +56,53 @@ export default function CartScreen({ navigation }) {
 
   const renderCartItem = ({ item }) => (
     <View style={[styles.cartItem, darkMode && styles.darkCard]}>
-      <View style={styles.itemImagePlaceholder}>
-        <MaterialIcons 
-          name={getProductIcon(item.category)} 
-          size={30} 
-          color="#6C63FF" 
+      <TouchableOpacity
+        style={[styles.deleteButton, darkMode && styles.darkDeleteButton]}
+        onPress={() => removeFromCart(item.id)}
+      >
+        <MaterialIcons name="close" size={16} color={Colors.error} />
+      </TouchableOpacity>
+
+      <View style={styles.itemImageContainer}>
+        <Image
+          source={{ uri: `${BASE_URL}${item.image}` }}
+          style={styles.itemImage}
+          resizeMode="cover"
         />
       </View>
-      
+
       <View style={styles.itemInfo}>
         <View style={styles.itemHeader}>
           <Text style={[styles.itemName, darkMode && styles.darkText]} numberOfLines={1}>
             {item.name}
           </Text>
-          <TouchableOpacity onPress={() => removeFromCart(item.id)}>
-            <MaterialIcons name="delete-outline" size={20} color="#FF6B6B" />
-          </TouchableOpacity>
         </View>
-        
+
         <Text style={[styles.itemPrice, darkMode && styles.darkText]}>
           ${item.price.toFixed(2)} each
         </Text>
-        
+
         <View style={styles.quantityContainer}>
           <TouchableOpacity
             style={[styles.quantityButton, darkMode && styles.darkQuantityButton]}
             onPress={() => updateQuantity(item.id, item.quantity - 1)}
           >
-            <MaterialIcons name="remove" size={18} color="#6C63FF" />
+            <MaterialIcons name="remove" size={18} color={Colors.primary} />
           </TouchableOpacity>
-          
+
           <Text style={[styles.quantity, darkMode && styles.darkText]}>
             {item.quantity}
           </Text>
-          
+
           <TouchableOpacity
             style={[styles.quantityButton, darkMode && styles.darkQuantityButton]}
             onPress={() => updateQuantity(item.id, item.quantity + 1)}
           >
-            <MaterialIcons name="add" size={18} color="#6C63FF" />
+            <MaterialIcons name="add" size={18} color={Colors.primary} />
           </TouchableOpacity>
         </View>
       </View>
-      
+
       <View style={styles.itemTotal}>
         <Text style={[styles.totalPrice, darkMode && styles.darkText]}>
           ${(item.price * item.quantity).toFixed(2)}
@@ -105,7 +112,7 @@ export default function CartScreen({ navigation }) {
   );
 
   const getProductIcon = (category) => {
-    switch(category) {
+    switch (category) {
       case 'Electronics': return 'devices';
       case 'Clothing': return 'checkroom';
       case 'Footwear': return 'sports';
@@ -141,7 +148,7 @@ export default function CartScreen({ navigation }) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
         <View style={styles.emptyContainer}>
-          <MaterialIcons name="shopping-cart" size={64} color={darkMode ? '#666' : '#ccc'} />
+          <MaterialIcons name="shopping-cart" size={64} color={darkMode ? Colors.darkSubText : Colors.lightSubText} />
           <Text style={[styles.emptyText, darkMode && styles.darkText]}>
             Your cart is empty
           </Text>
@@ -159,8 +166,7 @@ export default function CartScreen({ navigation }) {
     );
   }
 
-  else
-  {
+  else {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
         <FlatList
@@ -170,7 +176,7 @@ export default function CartScreen({ navigation }) {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.cartList}
           ListFooterComponent={
-            <View style={styles.summaryContainer}>
+            <View style={[styles.summaryContainer, darkMode && styles.darkSummaryContainer]}>
               <View style={styles.summaryRow}>
                 <Text style={[styles.summaryLabel, darkMode && styles.darkText]}>
                   Subtotal:
@@ -199,15 +205,15 @@ export default function CartScreen({ navigation }) {
           }
         />
 
-        <View style={styles.footer}>
+        <View style={[styles.footer, darkMode && styles.darkFooter]}>
           <TouchableOpacity
             style={styles.clearButton}
             onPress={handleClearCart}
           >
-            <MaterialIcons name="delete-sweep" size={20} color="#FF6B6B" />
+            <MaterialIcons name="delete-sweep" size={20} color={Colors.error} />
             <Text style={styles.clearButtonText}>Clear</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={styles.checkoutButton}
             onPress={handleCheckout}
@@ -224,10 +230,10 @@ export default function CartScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.lightBackground,
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: Colors.darkBackground,
   },
   cartList: {
     padding: 16,
@@ -235,32 +241,59 @@ const styles = StyleSheet.create({
   },
   cartItem: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     borderRadius: 16,
     marginBottom: 12,
     padding: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkCard: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
-  itemImagePlaceholder: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-    backgroundColor: 'rgba(108, 99, 255, 0.1)',
+  itemImageContainer: {
+    width: 75,
+    height: 75,
+    borderRadius: 14,
+    backgroundColor: '#F5F5F5',
+    overflow: 'hidden',
+    marginRight: 12,
+  },
+  itemImage: {
+    width: '100%',
+    height: '100%',
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    zIndex: 20,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 107, 107, 0.2)',
+  },
+  darkDeleteButton: {
+    backgroundColor: Colors.darkSurface,
+    borderColor: 'rgba(255, 107, 107, 0.4)',
   },
   itemInfo: {
     flex: 1,
+    paddingRight: 10,
   },
   itemHeader: {
     flexDirection: 'row',
@@ -271,16 +304,16 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     flex: 1,
     marginRight: 8,
   },
   darkText: {
-    color: '#ecf0f1',
+    color: Colors.darkText,
   },
   itemPrice: {
     fontSize: 14,
-    color: '#6C63FF',
+    color: Colors.primary,
     marginBottom: 8,
   },
   quantityContainer: {
@@ -292,20 +325,20 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.lightBorder,
   },
   darkQuantityButton: {
-    backgroundColor: '#1e1e1e',
-    borderColor: '#333',
+    backgroundColor: Colors.darkSurface,
+    borderColor: Colors.darkBorder,
   },
   quantity: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     minWidth: 24,
     textAlign: 'center',
   },
@@ -316,22 +349,22 @@ const styles = StyleSheet.create({
   totalPrice: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: Colors.lightText,
   },
   summaryContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     borderRadius: 16,
     padding: 16,
     marginTop: 8,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkSummaryContainer: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
   summaryRow: {
@@ -341,12 +374,12 @@ const styles = StyleSheet.create({
   },
   summaryLabel: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
   },
   summaryValue: {
     fontSize: 14,
     fontWeight: '500',
-    color: '#2c3e50',
+    color: Colors.lightText,
   },
   totalRow: {
     flexDirection: 'row',
@@ -354,20 +387,20 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: Colors.lightBorder,
   },
   darkTotalRow: {
-    borderTopColor: '#333',
+    borderTopColor: Colors.darkBorder,
   },
   totalLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
   },
   totalAmount: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#6C63FF',
+    color: Colors.primary,
   },
   footer: {
     position: 'absolute',
@@ -376,17 +409,21 @@ const styles = StyleSheet.create({
     right: 0,
     flexDirection: 'row',
     padding: 16,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: Colors.lightBorder,
     gap: 12,
+  },
+  darkFooter: {
+    backgroundColor: Colors.darkSurface,
+    borderTopColor: Colors.darkBorder,
   },
   clearButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff5f5',
+    backgroundColor: 'rgba(255, 107, 107, 0.1)',
     borderRadius: 12,
     padding: 14,
     gap: 6,
@@ -401,7 +438,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     borderRadius: 12,
     padding: 14,
     gap: 8,
@@ -437,7 +474,7 @@ const styles = StyleSheet.create({
     color: '#ecf0f1',
   },
   loginButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 28,
     borderRadius: 12,
@@ -456,28 +493,28 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginTop: 16,
     marginBottom: 8,
   },
   emptySubText: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     textAlign: 'center',
     marginBottom: 24,
   },
   shopButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
   shopButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
   darkSubText: {
-    color: '#bdc3c7',
+    color: Colors.darkSubText,
   },
 });

@@ -12,36 +12,33 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
+import { Colors } from '../styles/colors';
 
 export default function ProfileScreen({ navigation }) {
-  const { darkMode, setDarkMode, cart, wishlist, getCartTotal, isLogin } = useContext(ShopContext);
+  const { darkMode, setDarkMode, cart, wishlist, getCartTotal, isLogin, userData, logout } = useContext(ShopContext);
 
-  useEffect(() => {
-    if (!isLogin) {
-      navigation.replace('AuthScreen');
-    }
-  }, [isLogin]);
+
 
   const stats = [
     {
       icon: 'shopping-cart',
       label: 'Cart Items',
       value: cart.length,
-      color: '#6C63FF',
+      color: Colors.primary,
       navigate: 'Cart',
     },
     {
       icon: 'favorite',
       label: 'Wishlist',
       value: wishlist.length,
-      color: '#FF6B6B',
+      color: Colors.error,
       navigate: 'Wishlist',
     },
     {
       icon: 'attach-money',
       label: 'Cart Total',
       value: `$${getCartTotal().toFixed(2)}`,
-      color: '#4CAF50',
+      color: Colors.success,
     },
   ];
 
@@ -50,13 +47,13 @@ export default function ProfileScreen({ navigation }) {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View style={[styles.avatarContainer, darkMode && styles.darkAvatarContainer]}>
-            <MaterialIcons name="person" size={50} color="#6C63FF" />
+            <MaterialIcons name="person" size={50} color={Colors.primary} />
           </View>
           <Text style={[styles.userName, darkMode && styles.darkText]}>
-            Guest User
+            {userData?.name || 'Guest User'}
           </Text>
           <Text style={[styles.userEmail, darkMode && styles.darkSubText]}>
-            guest@example.com
+            {userData?.email || 'guest@example.com'}
           </Text>
         </View>
 
@@ -86,11 +83,11 @@ export default function ProfileScreen({ navigation }) {
           
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
-              <View style={[styles.iconContainer, { backgroundColor: 'rgba(108, 99, 255, 0.1)' }]}>
+              <View style={[styles.iconContainer, { backgroundColor: 'rgba(201, 155, 105, 0.1)' }]}>
                 <MaterialIcons 
                   name={darkMode ? 'dark-mode' : 'light-mode'} 
                   size={20} 
-                  color="#6C63FF" 
+                  color={Colors.primary} 
                 />
               </View>
               <View>
@@ -105,8 +102,8 @@ export default function ProfileScreen({ navigation }) {
             <Switch
               value={darkMode}
               onValueChange={setDarkMode}
-              trackColor={{ false: '#e0e0e0', true: 'rgba(108, 99, 255, 0.3)' }}
-              thumbColor={darkMode ? '#6C63FF' : '#f5f5f5'}
+              trackColor={{ false: Colors.lightBorder, true: 'rgba(201, 155, 105, 0.3)' }}
+              thumbColor={darkMode ? Colors.primary : '#f5f5f5'}
             />
           </View>
         </View>
@@ -119,7 +116,7 @@ export default function ProfileScreen({ navigation }) {
           <TouchableOpacity style={styles.menuItem} 
             onPress={() => navigation.navigate('AuthScreen', { type: 'edit' })}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="person-outline" size={22} color="#6C63FF" />
+              <MaterialIcons name="person-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 Edit Profile
               </Text>
@@ -129,7 +126,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="location-on" size={22} color="#6C63FF" />
+              <MaterialIcons name="location-on" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 Shipping Address
               </Text>
@@ -139,7 +136,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="payment" size={22} color="#6C63FF" />
+              <MaterialIcons name="payment" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 Payment Methods
               </Text>
@@ -149,7 +146,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="history" size={22} color="#6C63FF" />
+              <MaterialIcons name="history" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 Order History
               </Text>
@@ -165,7 +162,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="help-outline" size={22} color="#6C63FF" />
+              <MaterialIcons name="help-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 Help Center
               </Text>
@@ -175,7 +172,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="info-outline" size={22} color="#6C63FF" />
+              <MaterialIcons name="info-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
                 About
               </Text>
@@ -183,9 +180,9 @@ export default function ProfileScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={22} color={darkMode ? '#888' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.menuItem, styles.logoutButton]}>
+          <TouchableOpacity style={[styles.menuItem, styles.logoutButton]} onPress={logout}>
             <View style={styles.menuLeft}>
-              <MaterialIcons name="logout" size={22} color="#FF6B6B" />
+              <MaterialIcons name="logout" size={22} color={Colors.error} />
               <Text style={styles.logoutText}>Logout</Text>
             </View>
           </TouchableOpacity>
@@ -198,10 +195,10 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.lightBackground,
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: Colors.darkBackground,
   },
   header: {
     alignItems: 'center',
@@ -212,30 +209,30 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkAvatarContainer: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
   userName: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -243,19 +240,19 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   statButton: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     flex: 1,
     borderRadius: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkButton: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
   statCard: {
@@ -272,35 +269,35 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 11,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     textAlign: 'center',
   },
   darkText: {
-    color: '#ecf0f1',
+    color: Colors.darkText,
   },
   darkSubText: {
-    color: '#bdc3c7',
+    color: Colors.darkSubText,
   },
   section: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     borderRadius: 20,
     marginHorizontal: 16,
     marginBottom: 16,
     padding: 16,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkSection: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
   lastSection: {
@@ -309,7 +306,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     marginBottom: 12,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
@@ -335,12 +332,12 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginBottom: 2,
   },
   settingDescription: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
   },
   menuItem: {
     flexDirection: 'row',
@@ -355,17 +352,17 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 16,
-    color: '#2c3e50',
+    color: Colors.lightText,
   },
   logoutButton: {
     borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
+    borderTopColor: Colors.lightBorder,
     marginTop: 4,
     paddingTop: 16,
   },
   logoutText: {
     fontSize: 16,
-    color: '#FF6B6B',
+    color: Colors.error,
     fontWeight: '500',
   },
 });

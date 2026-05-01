@@ -7,22 +7,32 @@ import {
   StyleSheet,
   TextInput,
   SafeAreaView,
-  ActivityIndicator,
   Image,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 import { Colors } from '../styles/colors';
 
-export default function HomeScreen({ navigation }) {
-  const { products, darkMode, loading, toggleWishlist, isInWishlist, isLogin, BASE_URL } = useContext(ShopContext);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const categories = ['All', 'Electronics', 'Clothing', 'Footwear', 'Accessories'];
+export default function SearchScreen({ navigation }) {
+  const { products, darkMode, toggleWishlist, isInWishlist, isLogin, BASE_URL } = useContext(ShopContext);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-    return matchesCategory;
+    if (searchQuery.trim() === '') return [];
+    return product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.category.toLowerCase().includes(searchQuery.toLowerCase());
   });
+
+  const getProductIcon = (category) => {
+    switch (category) {
+      case 'Electronics': return 'devices';
+      case 'Clothing': return 'checkroom';
+      case 'Footwear': return 'sports';
+      case 'Accessories': return 'watch';
+      default: return 'inventory';
+    }
+  };
 
   const renderProductCard = ({ item }) => (
     <TouchableOpacity
@@ -73,72 +83,27 @@ export default function HomeScreen({ navigation }) {
     </TouchableOpacity>
   );
 
-  const getProductIcon = (category) => {
-    switch (category) {
-      case 'Electronics': return 'devices';
-      case 'Clothing': return 'checkroom';
-      case 'Footwear': return 'sports';
-      case 'Accessories': return 'watch';
-      default: return 'inventory';
-    }
-  };
-
-  const HeaderComponent = () => (
-    <>
-      <View style={styles.header}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../images/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
-        <View style={styles.headerTextContainer}>
-          <Text style={[styles.brandText, darkMode && styles.darkText]}>OnlineShopApp</Text>
-          <Text style={[styles.taglineText, darkMode && styles.darkSubText]}>Your shop, your favorites.</Text>
-        </View>
-      </View>
-
-      <View style={styles.categoriesContainer}>
-        <FlatList
-          data={categories}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={[
-                styles.categoryChip,
-                selectedCategory === item && styles.categoryChipActive,
-                darkMode && styles.darkCategoryChip,
-              ]}
-              onPress={() => setSelectedCategory(item)}
-            >
-              <Text style={[
-                styles.categoryText,
-                selectedCategory === item && styles.categoryTextActive,
-                darkMode && styles.darkCategoryText,
-              ]}>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={item => item}
-          contentContainerStyle={styles.categoriesList}
-        />
-      </View>
-    </>
-  );
-
-  if (loading) {
-    return (
-      <View style={[styles.loadingContainer, darkMode && styles.darkContainer]}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
+      <View style={styles.searchHeader}>
+        <View style={[styles.searchContainer, darkMode && styles.darkSearchContainer]}>
+          <MaterialIcons name="search" size={20} color={darkMode ? '#888' : '#999'} />
+          <TextInput
+            style={[styles.searchInput, darkMode && styles.darkInput]}
+            placeholder="Search products, brands, categories..."
+            placeholderTextColor={darkMode ? Colors.darkSubText : Colors.lightSubText}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoFocus={true}
+          />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => setSearchQuery('')}>
+              <MaterialIcons name="close" size={20} color={darkMode ? '#888' : '#999'} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+
       <FlatList
         data={filteredProducts}
         renderItem={renderProductCard}
@@ -146,16 +111,19 @@ export default function HomeScreen({ navigation }) {
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={HeaderComponent}
         contentContainerStyle={styles.productList}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <MaterialIcons name="search-off" size={48} color={darkMode ? Colors.darkSubText : Colors.lightSubText} />
+            <MaterialIcons
+              name={searchQuery === '' ? "search" : "search-off"}
+              size={80}
+              color={darkMode ? Colors.darkSubText : Colors.lightSubText}
+            />
             <Text style={[styles.emptyText, darkMode && styles.darkText]}>
-              No products found
+              {searchQuery === '' ? "Search for products" : "No results found"}
             </Text>
             <Text style={[styles.emptySubText, darkMode && styles.darkSubText]}>
-              Try adjusting your search or filter
+              {searchQuery === '' ? "Find your favorites items here" : "Try a different keyword"}
             </Text>
           </View>
         }
@@ -172,85 +140,36 @@ const styles = StyleSheet.create({
   darkContainer: {
     backgroundColor: Colors.darkBackground,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.lightBackground,
-  },
-  header: {
-    paddingHorizontal: 20,
+  searchHeader: {
     paddingVertical: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 20,
-  },
-  logoContainer: {
-    backgroundColor: '#FFFFFF',
-    padding: 8,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  logo: {
-    width: 60,
-    height: 60,
-  },
-  headerTextContainer: {
-    flex: 0,
-  },
-  brandText: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: Colors.lightText,
-    lineHeight: 28,
-  },
-  taglineText: {
-    fontSize: 14,
-    color: Colors.lightSubText,
-    marginTop: 2,
-    fontWeight: '500',
-  },
-  categoriesContainer: {
-    marginBottom: 16,
-  },
-  categoriesList: {
     paddingHorizontal: 16,
   },
-  categoryChip: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: Colors.lightSurface,
-    marginRight: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: Colors.lightBorder,
   },
-  darkCategoryChip: {
+  darkSearchContainer: {
     backgroundColor: Colors.darkSurface,
     borderColor: Colors.darkBorder,
   },
-  categoryChipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+  searchInput: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    fontSize: 16,
+    color: Colors.lightText,
   },
-  categoryText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.lightSubText,
-  },
-  categoryTextActive: {
-    color: Colors.white,
-  },
-  darkCategoryText: {
-    color: Colors.darkSubText,
+  darkInput: {
+    color: Colors.darkText,
   },
   productList: {
     padding: 10,
+    paddingBottom: 20,
   },
   row: {
     justifyContent: 'space-between',
@@ -296,18 +215,15 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   productName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: Colors.lightText,
     marginBottom: 2,
   },
   productCategory: {
-    fontSize: 12,
+    fontSize: 10,
     color: Colors.lightSubText,
     marginBottom: 8,
-  },
-  darkText: {
-    color: Colors.darkText,
   },
   priceContainer: {
     flexDirection: 'row',
@@ -315,7 +231,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productPrice: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
     color: Colors.primary,
   },
@@ -328,42 +244,31 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   ratingText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '700',
     color: '#B8860B',
     marginLeft: 2,
   },
-  darkSubText: {
-    color: Colors.darkSubText,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    marginBottom: 15,
-    marginTop: 10,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: Colors.lightText,
-  },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 48,
+    paddingTop: 100,
   },
   emptyText: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.lightText,
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: 20,
   },
   emptySubText: {
     fontSize: 14,
     color: Colors.lightSubText,
-    textAlign: 'center',
+    marginTop: 8,
+  },
+  darkText: {
+    color: Colors.darkText,
+  },
+  darkSubText: {
+    color: Colors.darkSubText,
   },
 });

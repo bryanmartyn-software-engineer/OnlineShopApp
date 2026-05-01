@@ -6,10 +6,13 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    FlatList, ActivityIndicator
+    FlatList, 
+    ActivityIndicator,
+    Image
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
+import { Colors } from '../styles/colors';
 
 const InputWithLabel = (props) => {
     const [touched, setTouched] = useState(false);
@@ -34,7 +37,7 @@ const InputWithLabel = (props) => {
                         showError && { borderColor: 'red' },
                         isPassword && { paddingRight: 40 }
                     ]}
-                    placeholderTextColor={darkMode ? '#999' : '#666'}
+                    placeholderTextColor={darkMode ? Colors.darkSubText : Colors.lightSubText}
                     secureTextEntry={isPassword && !showPassword}
                     onBlur={() => setTouched(true)}
                 />
@@ -52,7 +55,7 @@ const InputWithLabel = (props) => {
                         <MaterialIcons
                             name={showPassword ? 'visibility' : 'visibility-off'}
                             size={24}
-                            color={darkMode ? '#999' : '#666'}
+                            color={darkMode ? Colors.darkSubText : Colors.lightSubText}
                         />
                     </TouchableOpacity>
                 )}
@@ -70,8 +73,10 @@ const InputWithLabel = (props) => {
 };
 
 export default function AuthScreen({ route, navigation }){
-    const { darkMode, isLogin } = useContext(ShopContext);
+    const { darkMode, isLogin, login, register } = useContext(ShopContext);
     const {type} = route.params;
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [auth, setAuth] = useState({
         name: '',
         email: '',
@@ -108,12 +113,22 @@ export default function AuthScreen({ route, navigation }){
         setIsAuth(valid);
     }, [auth, type]);
 
-    const checkAuth = () => {
+    const checkAuth = async () => {
+        setLoading(true);
+        setError('');
+        
+        let result;
         if (type === 'login') {
-
+            result = await login(auth.email, auth.password);
+        } else if (type === 'registration') {
+            result = await register(auth.name, auth.email, auth.password);
         }
-        else if (type === 'registration') {
 
+        setLoading(false);
+        if (result && result.success) {
+            // Stay on current tab, App.js will switch AuthScreen -> ProfileScreen automatically
+        } else {
+            setError(result?.error || 'Authentication failed');
         }
     }
     
@@ -125,15 +140,30 @@ export default function AuthScreen({ route, navigation }){
                 <Text style={styles.backText}>{'<'} Back</Text>
             </TouchableOpacity>
             <View style={styles.section}>
+                <View style={styles.header}>
+                    <View style={styles.logoContainer}>
+                        <Image 
+                            source={require('../../images/logo.png')} 
+                            style={styles.logo}
+                            resizeMode="contain"
+                        />
+                    </View>
+                    <View style={styles.headerTextContainer}>
+                        <Text style={[styles.brandText, darkMode && styles.darkTitleText]}>OnlineShopApp</Text>
+                        <Text style={[styles.taglineText, darkMode && styles.darkSubText]}>Your shop, your favorites.</Text>
+                    </View>
+                </View>
+                
                 <View style={styles.title}>
-                    <Text style={[styles.titleText, darkMode && styles.darkTitleText]}>
+                    <Text style={[styles.formTitle, darkMode && styles.darkTitleText]}>
                         {
-                            type === 'login' ? 'Login' 
+                            type === 'login' ? 'Welcome Back!' 
                             : type === 'registration' ? 'Create Account'
                             : type === 'verify' ? 'Verify Account'
                             : type === 'edit' && 'Edit Profile'
                         }
                     </Text>
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
                 </View>
                 {
                     type === 'login' ?
@@ -239,22 +269,26 @@ export default function AuthScreen({ route, navigation }){
                 }
             </View>
             <View style={styles.section}>
-                <TouchableOpacity style={[styles.button,!isAuth && { opacity: 0.5 }]} 
-                    disabled={!isAuth} onPress={ checkAuth } >
-                    <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 20 }}>
-                        { 
-                            type === 'login' ? 'Login'
-                            : type === 'registration' ? 'Register'
-                            : type === 'verify' ? 'Verify Account'
-                            : type === 'edit' && 'Save Changes'
-                        }
-                    </Text>
+                <TouchableOpacity style={[styles.button, (!isAuth || loading) && { opacity: 0.5 }]} 
+                    disabled={!isAuth || loading} onPress={ checkAuth } >
+                    {loading ? (
+                        <ActivityIndicator color="#FFF" />
+                    ) : (
+                        <Text style={{ color: '#FFF', fontWeight: 'bold', fontSize: 20 }}>
+                            { 
+                                type === 'login' ? 'Login'
+                                : type === 'registration' ? 'Register'
+                                : type === 'verify' ? 'Verify Account'
+                                : type === 'edit' && 'Save Changes'
+                            }
+                        </Text>
+                    )}
                 </TouchableOpacity>
                 {
                     (type === 'login' || type === 'registration') && 
                     (
                         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}>
-                            <Text style={{fontSize:16, color: darkMode ?'#FFF' : '#000'}}>
+                            <Text style={{fontSize:16, color: darkMode ? Colors.darkText : Colors.lightText}}>
                                 { type === 'login' ? 'Don\'t have an account? ' 
                                     : 'Already have an account? '}
                             </Text>
@@ -279,11 +313,11 @@ export default function AuthScreen({ route, navigation }){
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#F7F8FA',
+        backgroundColor: Colors.lightBackground,
         paddingHorizontal: 20,
     },
     darkContainer: {
-        backgroundColor: '#121212',
+        backgroundColor: Colors.darkBackground,
     },
 
     back: {
@@ -292,7 +326,7 @@ const styles = StyleSheet.create({
     },
 
     backText:{
-        color: '#6C63FF',
+        color: Colors.primary,
         fontWeight: 'bold',
         fontSize: 20,
     },
@@ -301,18 +335,69 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
 
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 15,
+        marginBottom: 30,
+        marginTop: 20,
+    },
+
+    logoContainer: {
+        backgroundColor: '#FFFFFF',
+        padding: 6,
+        borderRadius: 12,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+
+    logo: {
+        width: 60,
+        height: 60,
+    },
+
+    headerTextContainer: {
+        flex: 0,
+    },
+
+    errorText: {
+        color: Colors.error,
+        marginTop: 10,
+        fontSize: 14,
+        textAlign: 'center',
+    },
+
+    brandText: {
+        fontSize: 26,
+        fontWeight: '800',
+        color: Colors.lightText,
+        lineHeight: 28,
+    },
+
+    taglineText: {
+        fontSize: 14,
+        color: Colors.lightSubText,
+        marginTop: 2,
+        fontWeight: '500',
+    },
+
     title: {
         alignItems: 'center',
         marginBottom: 20,
     },
 
-    titleText: {
-        color: '#000',
-        fontWeight: 'bold',
-        fontSize: 32,
+    formTitle: {
+        color: Colors.lightText,
+        fontWeight: '700',
+        fontSize: 24,
     },
+
     darkTitleText:{
-        color: '#FFF'
+        color: Colors.darkText
     },
 
     form: {
@@ -322,48 +407,48 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#000',
+        color: Colors.lightText,
         paddingLeft: 5,
         marginBottom: 5,
     },
     darkLabel: {
-        color: '#FFF'
+        color: Colors.darkText
     },
 
     input: {
         borderWidth: 1,
-        borderColor: '#DDD',
+        borderColor: Colors.lightBorder,
         borderRadius: 10,
         paddingHorizontal: 15,
         paddingVertical: 12,
-        backgroundColor: '#FFF',
+        backgroundColor: Colors.lightSurface,
         fontSize: 16,
     },
     darkInput: {
-        backgroundColor: '#1e1e1e',
-        borderColor: '#555',
-        color: '#FFF',
+        backgroundColor: Colors.darkSurface,
+        borderColor: Colors.darkBorder,
+        color: Colors.darkText,
     },
 
     message: {
-        color: 'red',
+        color: Colors.error,
         fontSize: 12,
     },
 
     button: {
-        backgroundColor: '#6C63FF',
+        backgroundColor: Colors.primary,
         paddingVertical: 14,
         borderRadius: 10,
         alignItems: 'center',
         marginTop: 10,
-        shadowColor: '#000',
+        shadowColor: Colors.black,
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 3,
     },
 
     textButton: {
-        color: '#6C63FF',
+        color: Colors.primary,
         fontWeight: 'bold',
         fontSize: 16,
     },

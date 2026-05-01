@@ -86,6 +86,7 @@ async function createDatabase() {
         `);
 
         stmt.run('Harry Potter', 'harry@example.com', '12345678', '4 Privet Drive, Little Whinging, Surrey');
+        stmt.run('Test User', 'test@test.com', 'password123', '123 App Street, Tech City');
         stmt.finalize();
     })
 
@@ -110,8 +111,8 @@ async function createDatabase() {
             'Feuerstein is the best fit for taller or larger body sizes thanks to its ultra-wide and tall backrest. It features a bucket seat design to help users correct their posture while the lumbar and neck pillows enhance comfort. Adjust with 165-degree recliner and adjustable armrests.',
             499.99,
             1000,
-            '../../public/resources/images/products/feuerstein/feuerstein.png',
-            '../../public/resources/images/products/feuerstein/',
+            '/public/resources/images/products/feuerstein/feuerstein.png',
+            '/public/resources/images/products/feuerstein/',
             8,
         ],
         [
@@ -123,8 +124,8 @@ async function createDatabase() {
             'Traditional garden chair designed for comfort and outdoor relaxation. Stackable for easy storage.',
             35.99,
             3000,
-            '../../public/resources/images/products/wir-hals/wir-hals.png',
-            '../../public/resources/images/products/wir-hals/',
+            '/public/resources/images/products/wir-hals/wir-hals.png',
+            '/public/resources/images/products/wir-hals/',
             10,
         ],
         [
@@ -136,8 +137,8 @@ async function createDatabase() {
             'Comfortable armchair with bent wood frame and adjustable cushions for styling.',
             299.99,
             50,
-            '../../public/resources/images/products/punkt/punkt.png',
-            '../../public/resources/images/products/punkt/',
+            '/public/resources/images/products/punkt/punkt.png',
+            '/public/resources/images/products/punkt/',
             6,
         ],
         [
@@ -149,8 +150,8 @@ async function createDatabase() {
             'Compact table with drawer storage for books and stationery.',
             89.99,
             2500,
-            '../../public/resources/images/products/gerechtigkeit/gerechtigkeit.png',
-            '../../public/resources/images/products/gerechtigkeit/',
+            '/public/resources/images/products/gerechtigkeit/gerechtigkeit.png',
+            '/public/resources/images/products/gerechtigkeit/',
             7,
         ],
         [
@@ -162,8 +163,8 @@ async function createDatabase() {
             'Dual-motor adjustable desk with sit/stand functionality and collision detection.',
             299.99,
             50,
-            '../../public/resources/images/products/betreffen/betreffen.png',
-            '../../public/resources/images/products/betreffen/',
+            '/public/resources/images/products/betreffen/betreffen.png',
+            '/public/resources/images/products/betreffen/',
             4,
         ],
         [
@@ -175,8 +176,8 @@ async function createDatabase() {
             'Durable sofa with a chaise longue and two-tone Vissle fabric cover.',
             1299.99,
             50,
-            '../../public/resources/images/products/momentan/momentan.png',
-            '../../public/resources/images/products/momentan/',
+            '/public/resources/images/products/momentan/momentan.png',
+            '/public/resources/images/products/momentan/',
             2,
         ],
         [
@@ -188,8 +189,8 @@ async function createDatabase() {
             'Handmade ceramic decorative vase featuring a copper base and handle.',
             888.88,
             10,
-            '../../public/resources/images/products/keramikblute/keramikblute.png',
-            '../../public/resources/images/products/keramikblute/',
+            '/public/resources/images/products/keramikblute/keramikblute.png',
+            '/public/resources/images/products/keramikblute/',
             2,
         ],
         [
@@ -201,8 +202,8 @@ async function createDatabase() {
             'Artistic table featuring patented International Klein Blue pigment and plexiglass.',
             25000.00,
             9,
-            '../../public/resources/images/products/icbklein/icbklein.png',
-            '../../public/resources/images/products/icbklein/',
+            '/public/resources/images/products/icbklein/icbklein.png',
+            '/public/resources/images/products/icbklein/',
             6,
         ],
         [
@@ -214,8 +215,8 @@ async function createDatabase() {
             'Storage cabinet with soft-closing hinges and push-to-open doors.',
             699.00,
             100,
-            '../../public/resources/images/products/tiera/tiera.png',
-            '../../public/resources/images/products/tiera/',
+            '/public/resources/images/products/tiera/tiera.png',
+            '/public/resources/images/products/tiera/',
             8,
         ],
         [
@@ -227,8 +228,8 @@ async function createDatabase() {
             'Metal base unit with adjustable shelves and durable laminate worktop.',
             799.00,
             50,
-            '../../public/resources/images/products/mila/mila.png',
-            '../../public/resources/images/products/mila/',
+            '/public/resources/images/products/mila/mila.png',
+            '/public/resources/images/products/mila/',
             5,
         ],
         [
@@ -240,8 +241,8 @@ async function createDatabase() {
             'Versatile bookcase with glass doors and adjustable hinges.',
             420.69,
             500,
-            '../../public/resources/images/products/ochsenberg/ochsenberg.png',
-            '../../public/resources/images/products/ochsenberg/',
+            '/public/resources/images/products/ochsenberg/ochsenberg.png',
+            '/public/resources/images/products/ochsenberg/',
             9,
         ],
         [
@@ -253,8 +254,8 @@ async function createDatabase() {
             'Three-seat sofa with removable, washable teddy-like cotton blend cover.',
             4028.00,
             10,
-            '../../public/resources/images/products/funffureins/funffureins.png',
-            '../../public/resources/images/products/funffureins/',
+            '/public/resources/images/products/funffureins/funffureins.png',
+            '/public/resources/images/products/funffureins/',
             10,
         ],
         [
@@ -266,8 +267,8 @@ async function createDatabase() {
             'Durable solid acacia wood bench pre-treated for weather protection.',
             399.99,
             399,
-            '../../public/resources/images/products/angeben/angeben.png',
-            '../../public/resources/images/products/angeben/',
+            '/public/resources/images/products/angeben/angeben.png',
+            '/public/resources/images/products/angeben/',
             8,
         ],
         [
@@ -279,8 +280,8 @@ async function createDatabase() {
             'Small movable wooden mannequin for display, decoration, or play.',
             35.00,
             100,
-            '../../public/resources/images/products/astolfo/astolfo.png',
-            '../../public/resources/images/products/astolfo/',
+            '/public/resources/images/products/astolfo/astolfo.png',
+            '/public/resources/images/products/astolfo/',
             10,
         ],
         [
@@ -292,8 +293,8 @@ async function createDatabase() {
             'Steel candle lantern suitable for indoor and outdoor festive atmospheres.',
             15.00,
             500,
-            '../../public/resources/images/products/adriaann/adriaann.png',
-            '../../public/resources/images/products/adriaann/',
+            '/public/resources/images/products/adriaann/adriaann.png',
+            '/public/resources/images/products/adriaann/',
             7,
         ],
         [
@@ -305,8 +306,8 @@ async function createDatabase() {
             'Adjustable beehive-shaped mirrors that can be arranged in custom patterns.',
             10.00,
             41328,
-            '../../public/resources/images/products/atemzeigen/atemzeigen.png',
-            '../../public/resources/images/products/atemzeigen/',
+            '/public/resources/images/products/atemzeigen/atemzeigen.png',
+            '/public/resources/images/products/atemzeigen/',
             5,
         ],
         [
@@ -318,8 +319,8 @@ async function createDatabase() {
             'Pack of 30 vanilla and warm milk scented tealight candles.',
             10.00,
             41328,
-            '../../public/resources/images/products/imsommer/imsommer.png',
-            '../../public/resources/images/products/imsommer/',
+            '/public/resources/images/products/imsommer/imsommer.png',
+            '/public/resources/images/products/imsommer/',
             9,
         ],
         [
@@ -331,8 +332,8 @@ async function createDatabase() {
             'Set of three lifelike artificial potted plants requiring no maintenance.',
             10.00,
             8548,
-            '../../public/resources/images/products/falschung/falschung.png',
-            '../../public/resources/images/products/falschung/',
+            '/public/resources/images/products/falschung/falschung.png',
+            '/public/resources/images/products/falschung/',
             8,
         ],
         [
@@ -344,8 +345,8 @@ async function createDatabase() {
             'Child-friendly wardrobe with adjustable interiors and soft-closing hinges.',
             567.00,
             40,
-            '../../public/resources/images/products/kleinstadt/kleinstadt.png',
-            '../../public/resources/images/products/kleinstadt/',
+            '/public/resources/images/products/kleinstadt/kleinstadt.png',
+            '/public/resources/images/products/kleinstadt/',
             6,
         ],
         [
@@ -357,8 +358,8 @@ async function createDatabase() {
             'Large galvanized steel bin with sturdy handles and lid hook.',
             67.00,
             1210,
-            '../../public/resources/images/products/knooten/knooten.png',
-            '../../public/resources/images/products/knooten/',
+            '/public/resources/images/products/knooten/knooten.png',
+            '/public/resources/images/products/knooten/',
             9,
         ]
         ];

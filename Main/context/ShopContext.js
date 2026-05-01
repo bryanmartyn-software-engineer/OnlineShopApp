@@ -9,82 +9,102 @@ export const ShopProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
   const [loading, setLoading] = useState(true);
   const [isLogin, setIsLogin] = useState(false);
+  const [userData, setUserData] = useState(null);
 
-  // Sample products data
+  const BASE_URL = 'http://10.0.2.2:5000';
+  const API_URL = `${BASE_URL}/api`;
+
+  // Fetch products from backend
   useEffect(() => {
-    const sampleProducts = [
-      {
-        id: '1',
-        name: 'Wireless Headphones',
-        price: 99.99,
-        category: 'Electronics',
-        description: 'High-quality wireless headphones with noise cancellation and 20-hour battery life.',
-        image: 'headphones',
-        rating: 4.5,
-        stock: 15,
-      },
-      {
-        id: '2',
-        name: 'Smart Watch',
-        price: 199.99,
-        category: 'Electronics',
-        description: 'Track your fitness, receive notifications, and more with this stylish smart watch.',
-        image: 'watch',
-        rating: 4.3,
-        stock: 8,
-      },
-      {
-        id: '3',
-        name: 'Cotton T-Shirt',
-        price: 24.99,
-        category: 'Clothing',
-        description: 'Comfortable 100% cotton t-shirt, available in multiple colors.',
-        image: 'tshirt',
-        rating: 4.7,
-        stock: 50,
-      },
-      {
-        id: '4',
-        name: 'Running Shoes',
-        price: 79.99,
-        category: 'Footwear',
-        description: 'Lightweight running shoes with excellent cushioning and support.',
-        image: 'shoes',
-        rating: 4.6,
-        stock: 12,
-      },
-      {
-        id: '5',
-        name: 'Backpack',
-        price: 49.99,
-        category: 'Accessories',
-        description: 'Durable waterproof backpack with laptop compartment.',
-        image: 'backpack',
-        rating: 4.4,
-        stock: 20,
-      },
-      {
-        id: '6',
-        name: 'Sunglasses',
-        price: 89.99,
-        category: 'Accessories',
-        description: 'Polarized sunglasses with UV protection.',
-        image: 'sunglasses',
-        rating: 4.2,
-        stock: 7,
-      },
-    ];
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/products`);
+        const data = await response.json();
+        
+        const mappedProducts = data.map(p => ({
+          id: p.productId.toString(),
+          name: p.productName,
+          price: p.productPrice,
+          category: p.category.split(',')[0],
+          description: p.productDesc,
+          image: p.activeThumbnail, 
+          rating: (p.popularity / 2).toFixed(1),
+          stock: p.stockQuantity,
+        }));
+        
+        setProducts(mappedProducts);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setLoading(false);
+      }
+    };
     
-    setProducts(sampleProducts);
-    setLoading(false);
-
+    fetchProducts();
   }, []);
 
+  // Fetch user data (Cart & Wishlist)
+  const fetchUserData = async (userId) => {
+    try {
+      // Fetch Cart
+      const cartResponse = await fetch(`${API_URL}/carts/${userId}`);
+      const cartData = await cartResponse.json();
+      
+      // Map cart items to full product objects
+      const fullCart = cartData.map(item => {
+        const product = products.find(p => p.id === item.productId.toString());
+        return product ? { ...product, quantity: item.quantity } : null;
+      }).filter(item => item !== null);
+      
+      setCart(fullCart);
+
+      // Fetch Wishlist
+      const wishlistResponse = await fetch(`${API_URL}/wishlist/${userId}`);
+      const wishlistData = await wishlistResponse.json();
+      
+      const fullWishlist = wishlistData.map(item => {
+        return products.find(p => p.id === item.productId.toString());
+      }).filter(item => item !== undefined);
+      
+      setWishlist(fullWishlist);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
   // Cart functions
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = async (product, quantity = 1) => {
+    if (isLogin && userData) {
+      const existingItem = cart.find(item => item.id === product.id);
+      try {
+        if (existingItem) {
+          await fetch(`${API_URL}/carts`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              userId: userData.userId, 
+              productId: parseInt(product.id), 
+              quantity: existingItem.quantity + quantity 
+            }),
+          });
+        } else {
+          await fetch(`${API_URL}/carts`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              userId: userData.userId, 
+              productId: parseInt(product.id), 
+              quantity 
+            }),
+          });
+        }
+      } catch (error) {
+        console.error('Error syncing cart:', error);
+      }
+    }
+
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
-      
       if (existingItem) {
         return prevCart.map(item =>
           item.id === product.id
@@ -97,16 +117,43 @@ export const ShopProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (productId) => {
+  const removeFromCart = async (productId) => {
+    if (isLogin && userData) {
+      try {
+        await fetch(`${API_URL}/carts`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userData.userId, productId: parseInt(productId) }),
+        });
+      } catch (error) {
+        console.error('Error removing from cart:', error);
+      }
+    }
     setCart(prevCart => prevCart.filter(item => item.id !== productId));
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(productId);
       return;
     }
-    
+
+    if (isLogin && userData) {
+      try {
+        await fetch(`${API_URL}/carts`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            userId: userData.userId, 
+            productId: parseInt(productId), 
+            quantity: newQuantity 
+          }),
+        });
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+      }
+    }
+
     setCart(prevCart =>
       prevCart.map(item =>
         item.id === productId ? { ...item, quantity: newQuantity } : item
@@ -116,13 +163,34 @@ export const ShopProvider = ({ children }) => {
 
   const clearCart = () => {
     setCart([]);
+    // In a real app, you'd also delete items from DB here or on checkout
   };
 
   // Wishlist functions
-  const toggleWishlist = (product) => {
+  const toggleWishlist = async (product) => {
+    const exists = wishlist.some(item => item.id === product.id);
+
+    if (isLogin && userData) {
+      try {
+        if (exists) {
+          await fetch(`${API_URL}/wishlist`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userData.userId, productId: parseInt(product.id) }),
+          });
+        } else {
+          await fetch(`${API_URL}/wishlist`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userData.userId, productId: parseInt(product.id) }),
+          });
+        }
+      } catch (error) {
+        console.error('Error syncing wishlist:', error);
+      }
+    }
+
     setWishlist(prevWishlist => {
-      const exists = prevWishlist.some(item => item.id === product.id);
-      
       if (exists) {
         return prevWishlist.filter(item => item.id !== product.id);
       } else {
@@ -144,6 +212,73 @@ export const ShopProvider = ({ children }) => {
     return cart.reduce((count, item) => count + item.quantity, 0);
   };
 
+  // Auth functions
+  const login = async (email, password) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsLogin(true);
+        const userResponse = await fetch(`${API_URL}/users/${data.userId}`);
+        const userFullData = await userResponse.json();
+        setUserData(userFullData);
+        
+        // Fetch saved cart and wishlist
+        await fetchUserData(data.userId);
+        
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const register = async (name, email, password) => {
+    try {
+      const checkResponse = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      
+      const checkData = await checkResponse.json();
+      if (!checkResponse.ok) return { success: false, error: checkData.error };
+
+      const response = await fetch(`${API_URL}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (response.ok) {
+        setIsLogin(true);
+        setUserData({ userId: data.userId, name, email });
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const logout = () => {
+    setIsLogin(false);
+    setUserData(null);
+    setCart([]);
+    setWishlist([]);
+  };
+
   return (
     <ShopContext.Provider value={{
       products,
@@ -152,6 +287,7 @@ export const ShopProvider = ({ children }) => {
       darkMode,
       loading,
       isLogin,
+      userData,
       setDarkMode,
       setIsLogin,
       addToCart,
@@ -162,6 +298,10 @@ export const ShopProvider = ({ children }) => {
       isInWishlist,
       getCartTotal,
       getCartItemCount,
+      login,
+      register,
+      logout,
+      BASE_URL,
     }}>
       {children}
     </ShopContext.Provider>

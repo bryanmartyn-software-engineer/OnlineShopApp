@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
+import { Colors } from '../styles/colors';
 
 export default function ProductDetailScreen({ route, navigation }) {
   const { product } = route.params;
-  const { darkMode, addToCart, toggleWishlist, isInWishlist, isLogin } = useContext(ShopContext);
+  const { darkMode, addToCart, toggleWishlist, isInWishlist, isLogin, BASE_URL } = useContext(ShopContext);
   const [quantity, setQuantity] = useState(1);
 
 const handleAddToCart = () => {
@@ -49,16 +51,21 @@ const handleAddToCart = () => {
   };
 
   return (
-    <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
-      <View style={styles.imageContainer}>
-        <View style={styles.productImagePlaceholder}>
-          <MaterialIcons 
-            name={getProductIcon(product.category)} 
-            size={80} 
-            color="#6C63FF" 
+    <View style={{ flex: 1 }}>
+      <ScrollView style={[styles.container, darkMode && styles.darkContainer]}>
+        <View style={styles.imageContainer}>
+          <TouchableOpacity 
+            style={[styles.backButton, darkMode && styles.darkBackButton]} 
+            onPress={() => navigation.goBack()}
+          >
+            <MaterialIcons name="arrow-back" size={24} color={darkMode ? Colors.darkText : Colors.lightText} />
+          </TouchableOpacity>
+          <Image 
+            source={{ uri: `${BASE_URL}${product.image}` }} 
+            style={styles.mainImage}
+            resizeMode="contain"
           />
         </View>
-      </View>
 
       <View style={[styles.contentContainer, darkMode && styles.darkContentContainer]}>
         <View style={styles.header}>
@@ -74,7 +81,7 @@ const handleAddToCart = () => {
             <MaterialIcons 
               name={isInWishlist(product.id) ? 'favorite' : 'favorite-border'} 
               size={28} 
-              color={isInWishlist(product.id) ? '#FF6B6B' : (darkMode ? '#888' : '#999')} 
+              color={isInWishlist(product.id) ? Colors.error : (darkMode ? Colors.darkSubText : Colors.lightSubText)} 
             />
           </TouchableOpacity>
         </View>
@@ -107,7 +114,7 @@ const handleAddToCart = () => {
           />
           <Text style={[
             styles.stockText,
-            { color: product.stock > 0 ? '#4CAF50' : '#FF6B6B' }
+            { color: product.stock > 0 ? Colors.success : Colors.error }
           ]}>
             {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
           </Text>
@@ -145,7 +152,7 @@ const handleAddToCart = () => {
                 <MaterialIcons 
                   name="remove" 
                   size={20} 
-                  color={quantity <= 1 ? (darkMode ? '#444' : '#ccc') : '#6C63FF'} 
+                  color={quantity <= 1 ? (darkMode ? Colors.darkBorder : Colors.lightBorder) : Colors.primary} 
                 />
               </TouchableOpacity>
               
@@ -161,7 +168,7 @@ const handleAddToCart = () => {
                 <MaterialIcons 
                   name="add" 
                   size={20} 
-                  color={quantity >= product.stock ? (darkMode ? '#444' : '#ccc') : '#6C63FF'} 
+                  color={quantity >= product.stock ? (darkMode ? Colors.darkBorder : Colors.lightBorder) : Colors.primary} 
                 />
               </TouchableOpacity>
             </View>
@@ -183,7 +190,8 @@ const handleAddToCart = () => {
           </Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -200,37 +208,33 @@ const getProductIcon = (category) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.lightBackground,
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: Colors.darkBackground,
   },
   imageContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     padding: 32,
     alignItems: 'center',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
-  productImagePlaceholder: {
-    width: 200,
-    height: 200,
-    borderRadius: 20,
-    backgroundColor: 'rgba(108, 99, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+  mainImage: {
+    width: '100%',
+    height: 300,
   },
   contentContainer: {
     flex: 1,
     padding: 20,
   },
   darkContentContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: Colors.darkBackground,
   },
   header: {
     flexDirection: 'row',
@@ -241,12 +245,12 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#2c3e50',
+    color: Colors.lightText,
     flex: 1,
     marginRight: 12,
   },
   darkText: {
-    color: '#ecf0f1',
+    color: Colors.darkText,
   },
   ratingSection: {
     marginBottom: 16,
@@ -257,12 +261,12 @@ const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
   },
   price: {
     fontSize: 32,
     fontWeight: '700',
-    color: '#6C63FF',
+    color: Colors.primary,
     marginBottom: 16,
   },
   stockContainer: {
@@ -281,29 +285,29 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginBottom: 8,
   },
   description: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     lineHeight: 22,
   },
   darkSubText: {
-    color: '#bdc3c7',
+    color: Colors.darkSubText,
   },
   categoryBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: 'rgba(108, 99, 255, 0.1)',
+    backgroundColor: 'rgba(201, 155, 105, 0.1)',
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: 20,
   },
   darkCategoryBadge: {
-    backgroundColor: 'rgba(108, 99, 255, 0.2)',
+    backgroundColor: 'rgba(201, 155, 105, 0.2)',
   },
   categoryText: {
-    color: '#6C63FF',
+    color: Colors.primary,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -319,25 +323,25 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: Colors.lightBorder,
   },
   darkQuantityButton: {
-    backgroundColor: '#1e1e1e',
-    borderColor: '#333',
+    backgroundColor: Colors.darkSurface,
+    borderColor: Colors.darkBorder,
   },
   quantity: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     minWidth: 40,
     textAlign: 'center',
   },
   addToCartButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     padding: 16,
     flexDirection: 'row',
@@ -346,19 +350,39 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 8,
     marginBottom: 20,
-    shadowColor: '#6C63FF',
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
   },
   disabledButton: {
-    backgroundColor: '#bdc3c7',
+    backgroundColor: Colors.lightSubText,
     shadowOpacity: 0,
   },
   addToCartText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: '600',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  darkBackButton: {
+    backgroundColor: 'rgba(30, 30, 30, 0.8)',
   },
 });

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
+import { Colors } from '../styles/colors';
 
 export default function WishlistScreen({ navigation }) {
   const { wishlist, darkMode, toggleWishlist, addToCart, isLogin } = useContext(ShopContext);
@@ -28,7 +29,7 @@ export default function WishlistScreen({ navigation }) {
         <MaterialIcons 
           name={getProductIcon(item.category)} 
           size={30} 
-          color="#6C63FF" 
+          color={Colors.primary} 
         />
       </View>
       
@@ -38,7 +39,7 @@ export default function WishlistScreen({ navigation }) {
             {item.name}
           </Text>
           <TouchableOpacity onPress={() => toggleWishlist(item)}>
-            <MaterialIcons name="favorite" size={22} color="#FF6B6B" />
+            <MaterialIcons name="favorite" size={22} color={Colors.error} />
           </TouchableOpacity>
         </View>
         
@@ -99,7 +100,7 @@ export default function WishlistScreen({ navigation }) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
         <View style={styles.emptyContainer}>
-          <MaterialIcons name="favorite-border" size={64} color={darkMode ? '#666' : '#ccc'} />
+          <MaterialIcons name="favorite-border" size={64} color={darkMode ? Colors.darkSubText : Colors.lightSubText} />
           <Text style={[styles.emptyText, darkMode && styles.darkText]}>
             Your wishlist is empty
           </Text>
@@ -135,36 +136,36 @@ export default function WishlistScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: Colors.lightBackground,
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: Colors.darkBackground,
   },
   wishlistList: {
     padding: 16,
   },
   wishlistItem: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.lightSurface,
     borderRadius: 16,
     marginBottom: 12,
     padding: 12,
-    shadowColor: '#000',
+    shadowColor: Colors.black,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 3,
   },
   darkCard: {
-    backgroundColor: '#1e1e1e',
-    shadowColor: '#000',
+    backgroundColor: Colors.darkSurface,
+    shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
   itemImagePlaceholder: {
     width: 70,
     height: 70,
     borderRadius: 12,
-    backgroundColor: 'rgba(108, 99, 255, 0.1)',
+    backgroundColor: 'rgba(201, 155, 105, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -181,20 +182,20 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     flex: 1,
     marginRight: 8,
   },
   darkText: {
-    color: '#ecf0f1',
+    color: Colors.darkText,
   },
   itemCategory: {
     fontSize: 12,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     marginBottom: 8,
   },
   darkSubText: {
-    color: '#bdc3c7',
+    color: Colors.darkSubText,
   },
   itemFooter: {
     flexDirection: 'row',
@@ -204,19 +205,19 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#6C63FF',
+    color: Colors.primary,
   },
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 6,
     gap: 4,
   },
   addButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 12,
     fontWeight: '500',
   },
@@ -239,20 +240,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     textAlign: 'center',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginBottom: 20,
   },
   darkLoginText: {
-    color: '#ecf0f1',
+    color: Colors.darkText,
   },
   loginButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     paddingVertical: 12,
     paddingHorizontal: 28,
     borderRadius: 12,
   },
   loginButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -265,24 +266,24 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#2c3e50',
+    color: Colors.lightText,
     marginTop: 16,
     marginBottom: 8,
   },
   emptySubText: {
     fontSize: 14,
-    color: '#7f8c8d',
+    color: Colors.lightSubText,
     textAlign: 'center',
     marginBottom: 24,
   },
   shopButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: Colors.primary,
     borderRadius: 16,
     paddingHorizontal: 24,
     paddingVertical: 12,
   },
   shopButtonText: {
-    color: '#fff',
+    color: Colors.white,
     fontSize: 16,
     fontWeight: '600',
   },

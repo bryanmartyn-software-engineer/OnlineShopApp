@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const { createDatabase } = require('./createDatabase');
 
+const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
@@ -10,6 +11,9 @@ const io = new Server(server);
 // Namespace: /onlineShop
 const onlineShop = io.of('/onlineShop');
 app.use(express.json());
+
+// Serve static images from the public folder
+app.use('/public', express.static(path.join(__dirname, '../public')));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
