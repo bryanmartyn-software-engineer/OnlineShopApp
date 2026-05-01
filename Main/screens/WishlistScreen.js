@@ -6,13 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 import { Colors } from '../styles/colors';
 
 export default function WishlistScreen({ navigation }) {
-  const { wishlist, darkMode, toggleWishlist, addToCart, isLogin } = useContext(ShopContext);
+  const { wishlist, darkMode, toggleWishlist, addToCart, isLogin, BASE_URL } = useContext(ShopContext);
 
   const handleAddToCart = (item) => {
     addToCart(item);
@@ -25,11 +26,11 @@ export default function WishlistScreen({ navigation }) {
       onPress={() => navigation.navigate('ProductDetail', { product: item })}
       activeOpacity={0.7}
     >
-      <View style={styles.itemImagePlaceholder}>
-        <MaterialIcons 
-          name={getProductIcon(item.category)} 
-          size={30} 
-          color={Colors.primary} 
+      <View style={styles.itemImageContainer}>
+        <Image
+          source={{ uri: `${BASE_URL}${item.image}` }}
+          style={styles.itemImage}
+          resizeMode="cover"
         />
       </View>
       
@@ -161,14 +162,17 @@ const styles = StyleSheet.create({
     shadowColor: Colors.black,
     shadowOpacity: 0.3,
   },
-  itemImagePlaceholder: {
+  itemImageContainer: {
     width: 70,
     height: 70,
     borderRadius: 12,
-    backgroundColor: 'rgba(201, 155, 105, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  itemImage: {
+    width: '100%',
+    height: '100%',
   },
   itemInfo: {
     flex: 1,

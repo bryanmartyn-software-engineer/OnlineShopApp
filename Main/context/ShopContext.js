@@ -325,6 +325,70 @@ export const ShopProvider = ({ children }) => {
     AsyncStorage.removeItem('userData');
   };
 
+  const updateUser = async (userId, name, password) => {
+    try {
+      const response = await fetch(`${API_URL}/users/${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const updatedUser = { ...userData, name };
+        setUserData(updatedUser);
+        await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const checkout = async (address) => {
+    if (!isLogin || !userData || cart.length === 0) return { success: false, error: 'Cannot checkout' };
+
+    try {
+      // 1. Create the order
+      const orderData = {
+        userId: userData.userId,
+        totalAmount: getCartTotal(),
+        address: address || userData.address || 'No Address Provided',
+        items: cart.map(item => ({
+          productId: parseInt(item.id),
+          quantity: item.quantity
+        }))
+      };
+
+      const orderResponse = await fetch(`${API_URL}/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!orderResponse.ok) {
+        const errData = await orderResponse.json();
+        return { success: false, error: errData.error || 'Failed to create order' };
+      }
+
+      // 2. Clear the cart in backend
+      await fetch(`${API_URL}/carts/${userData.userId}`, {
+        method: 'DELETE',
+      });
+
+      // 3. Clear local state
+      setCart([]);
+      return { success: true };
+
+    } catch (error) {
+      console.error('Checkout error:', error);
+      return { success: false, error: 'Network error during checkout' };
+    }
+  };
+
   return (
     <ShopContext.Provider value={{
       products,
@@ -347,6 +411,9 @@ export const ShopProvider = ({ children }) => {
       login,
       register,
       logout,
+      updateUser,
+      checkout,
+      API_URL,
       BASE_URL,
     }}>
       {children}

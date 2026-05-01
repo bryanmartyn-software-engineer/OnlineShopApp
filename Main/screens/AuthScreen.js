@@ -73,12 +73,12 @@ const InputWithLabel = (props) => {
 };
 
 export default function AuthScreen({ route, navigation }) {
-    const { darkMode, isLogin, login, register } = useContext(ShopContext);
+    const { darkMode, isLogin, login, register, updateUser, userData } = useContext(ShopContext);
     const { type } = route.params;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [auth, setAuth] = useState({
-        name: '',
+        name: type === 'edit' ? userData?.name || '' : '',
         email: '',
         password: '',
         confirmPassword: ''
@@ -108,7 +108,8 @@ export default function AuthScreen({ route, navigation }) {
         } else if (type === 'edit') {
             valid =
                 auth.name.length >= 1 &&
-                auth.password.length >= 8;
+                auth.password.length >= 8 &&
+                auth.password === auth.confirmPassword;
         }
         setIsAuth(valid);
     }, [auth, type]);
@@ -122,11 +123,16 @@ export default function AuthScreen({ route, navigation }) {
             result = await login(auth.email, auth.password);
         } else if (type === 'registration') {
             result = await register(auth.name, auth.email, auth.password);
+        } else if (type === 'edit') {
+            result = await updateUser(userData.userId, auth.name, auth.password);
         }
 
         setLoading(false);
         if (result && result.success) {
-            // Stay on current tab, App.js will switch AuthScreen -> ProfileScreen automatically
+            if (type === 'edit') {
+                navigation.goBack();
+            }
+            // For login/registration, App.js will switch AuthScreen -> ProfileScreen automatically
         } else {
             setError(result?.error || 'Authentication failed');
         }
@@ -270,11 +276,20 @@ export default function AuthScreen({ route, navigation }) {
                                         <InputWithLabel
                                             label={'Password'}
                                             secureTextEntry
-                                            placeholder='Enter your password'
+                                            placeholder='Enter your new password'
                                             value={auth.password}
                                             onChangeText={(value) => setAuth(auth => ({ ...auth, password: value }))}
                                             validateRule={!!auth.password && auth.password.length >= 8}
                                             message='The password should contain at least 8 characters.'
+                                        />
+                                        <InputWithLabel
+                                            label={'Confirm Password'}
+                                            secureTextEntry
+                                            placeholder='Confirm your new password'
+                                            value={auth.confirmPassword}
+                                            onChangeText={(value) => setAuth(auth => ({ ...auth, confirmPassword: value }))}
+                                            validateRule={auth.confirmPassword && auth.password === auth.confirmPassword}
+                                            message='Passwords do not match.'
                                         />
                                     </View>
                                 )

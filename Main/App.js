@@ -15,6 +15,10 @@ import CartScreen from './screens/CartScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import AuthScreen from './screens/AuthScreen';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
+import PaymentMethodsScreen from './screens/PaymentMethodsScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import CheckoutScreen from './screens/CheckoutScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -139,6 +143,11 @@ function CartStack() {
         component={CartScreen}
         options={{ title: 'Shopping Cart' }}
       />
+      <Stack.Screen
+        name="Checkout"
+        component={CheckoutScreen}
+        options={{ title: 'Checkout' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -234,6 +243,26 @@ function ProfileStack() {
             name="ProfileScreen"
             component={ProfileScreen}
             options={{ title: 'Profile' }}
+          />
+          <Stack.Screen
+            name="AuthScreen"
+            component={AuthScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ShippingAddress"
+            component={ShippingAddressScreen}
+            options={{ title: 'Shipping Address' }}
+          />
+          <Stack.Screen
+            name="PaymentMethods"
+            component={PaymentMethodsScreen}
+            options={{ title: 'Payment Methods' }}
+          />
+          <Stack.Screen
+            name="OrderHistory"
+            component={OrderHistoryScreen}
+            options={{ title: 'Order History' }}
           />
           <Stack.Screen
             name="HelpCenter"

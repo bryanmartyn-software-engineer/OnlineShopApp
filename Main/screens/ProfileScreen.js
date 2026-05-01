@@ -124,7 +124,8 @@ export default function ProfileScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={22} color={darkMode ? '#888' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem}
+            onPress={() => navigation.navigate('ShippingAddress')}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="location-on" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
@@ -134,7 +135,8 @@ export default function ProfileScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={22} color={darkMode ? '#888' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem}
+            onPress={() => navigation.navigate('PaymentMethods')}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="payment" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
@@ -144,7 +146,8 @@ export default function ProfileScreen({ navigation }) {
             <MaterialIcons name="chevron-right" size={22} color={darkMode ? '#888' : '#999'} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem}
+            onPress={() => navigation.navigate('OrderHistory')}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="history" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>

@@ -26,21 +26,7 @@ export default function CartScreen({ navigation }) {
   } = useContext(ShopContext);
 
   const handleCheckout = () => {
-    Alert.alert(
-      'Checkout',
-      `Total: $${getCartTotal().toFixed(2)}\n\nThis is a demo app. Thank you for shopping!`,
-      [
-        { text: 'Continue Shopping', style: 'cancel' },
-        {
-          text: 'Clear Cart',
-          onPress: () => {
-            clearCart();
-            Alert.alert('Success', 'Your order has been placed!');
-          },
-          style: 'destructive',
-        },
-      ]
-    );
+    navigation.navigate('Checkout');
   };
 
   const handleClearCart = () => {

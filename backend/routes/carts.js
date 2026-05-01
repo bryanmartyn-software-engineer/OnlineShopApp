@@ -76,4 +76,20 @@ router.delete('/', async (req, res) => {
   );
 });
 
+// Delete: delete all cart items for a specific userId
+router.delete('/:userId', async (req, res) => {
+  const { userId } = req.params;
+  
+  db.run(
+    'DELETE FROM cart WHERE userId = ?',
+    [userId],
+    function(err) {
+      if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      res.json({ message: 'Cart cleared successfully' });
+    }
+  );
+});
+
 module.exports = router;
