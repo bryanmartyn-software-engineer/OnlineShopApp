@@ -86,21 +86,30 @@ export default function SearchScreen({ navigation }) {
   return (
     <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
       <View style={styles.searchHeader}>
-        <View style={[styles.searchContainer, darkMode && styles.darkSearchContainer]}>
-          <MaterialIcons name="search" size={20} color={darkMode ? '#888' : '#999'} />
-          <TextInput
-            style={[styles.searchInput, darkMode && styles.darkInput]}
-            placeholder="Search products, brands, categories..."
-            placeholderTextColor={darkMode ? Colors.darkSubText : Colors.lightSubText}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            autoFocus={true}
-          />
-          {searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => setSearchQuery('')}>
-              <MaterialIcons name="close" size={20} color={darkMode ? '#888' : '#999'} />
-            </TouchableOpacity>
-          )}
+        <View style={styles.searchHeaderRow}>
+          <View style={[styles.searchContainer, darkMode && styles.darkSearchContainer]}>
+            <MaterialIcons name="search" size={20} color={darkMode ? '#888' : '#999'} />
+            <TextInput
+              style={[styles.searchInput, darkMode && styles.darkInput]}
+              placeholder="Search products, categories..."
+              placeholderTextColor={darkMode ? Colors.darkSubText : Colors.lightSubText}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus={true}
+              returnKeyType="search"
+            />
+            {searchQuery.length > 0 && (
+              <TouchableOpacity onPress={() => setSearchQuery('')}>
+                <MaterialIcons name="close" size={20} color={darkMode ? '#888' : '#999'} />
+              </TouchableOpacity>
+            )}
+          </View>
+          <TouchableOpacity 
+            style={[styles.searchButton, darkMode && styles.darkSearchButton]}
+            onPress={() => {/* Search is already filtered by state, but this button provides the 'back then' feel */}}
+          >
+            <Text style={styles.searchButtonText}>Search</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -144,7 +153,13 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 16,
   },
+  searchHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
   searchContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.lightSurface,
@@ -152,6 +167,22 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: Colors.lightBorder,
+  },
+  searchButton: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  darkSearchButton: {
+    backgroundColor: Colors.primaryDark,
+  },
+  searchButtonText: {
+    color: Colors.white,
+    fontWeight: '700',
+    fontSize: 14,
   },
   darkSearchContainer: {
     backgroundColor: Colors.darkSurface,

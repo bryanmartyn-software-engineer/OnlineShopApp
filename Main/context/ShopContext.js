@@ -53,9 +53,13 @@ export const ShopProvider = ({ children }) => {
           id: p.productId.toString(),
           name: p.productName,
           price: p.productPrice,
-          category: p.category.split(',')[0],
+          category: p.category, // Keep full comma-separated string
           description: p.productDesc,
           image: p.activeThumbnail,
+          material: p.productMaterial,
+          dimension: p.productDimension,
+          photoLocation: p.photoLocation,
+          images: p.images || [],
           rating: (p.popularity / 2).toFixed(1),
           stock: p.stockQuantity,
         }));

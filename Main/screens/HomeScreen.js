@@ -13,14 +13,22 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 import { Colors } from '../styles/colors';
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ route, navigation }) {
   const { products, darkMode, loading, toggleWishlist, isInWishlist, isLogin, BASE_URL } = useContext(ShopContext);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const categories = ['All', 'Electronics', 'Clothing', 'Footwear', 'Accessories'];
+  const [selectedCategory, setSelectedCategory] = useState(route.params?.initialCategory || 'All');
+  const categories = ['All', 'Bedroom', 'Office', 'Dining', 'Outdoor', 'Living Room'];
+
+  // Update category if route params change
+  React.useEffect(() => {
+    if (route.params?.initialCategory) {
+      setSelectedCategory(route.params.initialCategory);
+    }
+  }, [route.params?.initialCategory]);
 
   const filteredProducts = products.filter(product => {
-    const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-    return matchesCategory;
+    if (selectedCategory === 'All') return true;
+    const productCategories = product.category.toLowerCase().split(',');
+    return productCategories.includes(selectedCategory.toLowerCase());
   });
 
   const renderProductCard = ({ item }) => (
@@ -39,7 +47,7 @@ export default function HomeScreen({ navigation }) {
           style={styles.wishlistIcon}
           onPress={() => {
             if (!isLogin) {
-              return navigation.navigate('Profile', { 
+              return navigation.navigate('Profile', {
                 screen: 'Login',
                 params: { returnTo: 'HomeScreen' }
               });
@@ -110,7 +118,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity
               style={[
                 styles.categoryChip,
-                selectedCategory === item && styles.categoryChipActive,
+                selectedCategory === item && (darkMode ? styles.categoryChipActive : styles.categoryChipActiveLight),
                 darkMode && styles.darkCategoryChip,
               ]}
               onPress={() => setSelectedCategory(item)}
@@ -239,6 +247,10 @@ const styles = StyleSheet.create({
   categoryChipActive: {
     backgroundColor: Colors.primary,
     borderColor: Colors.primary,
+  },
+  categoryChipActiveLight: {
+    backgroundColor: '#B8860B', // Gold for light mode
+    borderColor: '#B8860B',
   },
   categoryText: {
     fontSize: 14,
