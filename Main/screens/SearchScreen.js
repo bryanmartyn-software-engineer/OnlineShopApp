@@ -72,7 +72,7 @@ export default function SearchScreen({ navigation }) {
         </Text>
         <View style={styles.priceContainer}>
           <Text style={[styles.productPrice, darkMode && styles.darkText]}>
-            ${item.price.toFixed(2)}
+            RM {item.price.toFixed(2)}
           </Text>
           <View style={styles.ratingBox}>
             <MaterialIcons name="star" size={14} color="#FFD700" />

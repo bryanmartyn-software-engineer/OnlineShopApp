@@ -61,14 +61,14 @@ export default function CheckoutScreen({ navigation }) {
                 {item.quantity}x {item.name}
               </Text>
               <Text style={[styles.summaryItemPrice, darkMode && styles.darkText]}>
-                ${(item.price * item.quantity).toFixed(2)}
+                RM {(item.price * item.quantity).toFixed(2)}
               </Text>
             </View>
           ))}
           <View style={styles.divider} />
           <View style={styles.summaryItem}>
             <Text style={[styles.totalLabel, darkMode && styles.darkText]}>Total Amount</Text>
-            <Text style={styles.totalValue}>${getCartTotal().toFixed(2)}</Text>
+            <Text style={styles.totalValue}>RM {getCartTotal().toFixed(2)}</Text>
           </View>
         </View>
       </ScrollView>

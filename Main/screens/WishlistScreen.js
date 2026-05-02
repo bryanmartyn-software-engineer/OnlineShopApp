@@ -50,7 +50,7 @@ export default function WishlistScreen({ navigation }) {
         
         <View style={styles.itemFooter}>
           <Text style={[styles.itemPrice, darkMode && styles.darkText]}>
-            ${item.price.toFixed(2)}
+            RM {item.price.toFixed(2)}
           </Text>
           
           <TouchableOpacity

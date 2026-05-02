@@ -199,7 +199,7 @@ export default function ProductDetailScreen({ route, navigation }) {
           </View>
 
           <Text style={[styles.price, darkMode && styles.darkText]}>
-            ${product.price.toFixed(2)}
+            RM {product.price.toFixed(2)}
           </Text>
 
           <View style={styles.stockContainer}>

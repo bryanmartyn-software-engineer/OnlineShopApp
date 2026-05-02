@@ -37,7 +37,7 @@ export default function ProfileScreen({ navigation }) {
     {
       icon: 'attach-money',
       label: 'Cart Total',
-      value: `$${getCartTotal().toFixed(2)}`,
+      value: `RM ${getCartTotal().toFixed(2)}`,
       color: Colors.success,
     },
   ];

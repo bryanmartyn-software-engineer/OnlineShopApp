@@ -65,7 +65,7 @@ export default function CartScreen({ navigation }) {
         </View>
 
         <Text style={[styles.itemPrice, darkMode && styles.darkText]}>
-          ${item.price.toFixed(2)} each
+          RM {item.price.toFixed(2)} each
         </Text>
 
         <View style={styles.quantityContainer}>
@@ -91,7 +91,7 @@ export default function CartScreen({ navigation }) {
 
       <View style={styles.itemTotal}>
         <Text style={[styles.totalPrice, darkMode && styles.darkText]}>
-          ${(item.price * item.quantity).toFixed(2)}
+          RM {(item.price * item.quantity).toFixed(2)}
         </Text>
       </View>
     </View>
@@ -168,7 +168,7 @@ export default function CartScreen({ navigation }) {
                   Subtotal:
                 </Text>
                 <Text style={[styles.summaryValue, darkMode && styles.darkText]}>
-                  ${getCartTotal().toFixed(2)}
+                  RM {getCartTotal().toFixed(2)}
                 </Text>
               </View>
               <View style={styles.summaryRow}>
@@ -184,7 +184,7 @@ export default function CartScreen({ navigation }) {
                   Total:
                 </Text>
                 <Text style={[styles.totalAmount, darkMode && styles.darkText]}>
-                  ${getCartTotal().toFixed(2)}
+                  RM {getCartTotal().toFixed(2)}
                 </Text>
               </View>
             </View>
