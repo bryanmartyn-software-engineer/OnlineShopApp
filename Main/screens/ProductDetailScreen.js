@@ -219,7 +219,7 @@ export default function ProductDetailScreen({ route, navigation }) {
           
           <View style={styles.section}>
             <View style={styles.sectionHeaderRow}>
-              <MaterialIcons name="layer" size={20} color={Colors.primary} style={{ marginRight: 8 }} />
+              <MaterialIcons name="layers" size={20} color={Colors.primary} style={{ marginRight: 8 }} />
               <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
                 Material
               </Text>
