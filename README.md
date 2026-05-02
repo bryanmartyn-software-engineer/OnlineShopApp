@@ -109,6 +109,7 @@ OnlineShopApp/
 ├── images/             # App-level assets (Logo, etc.)
 └── index.js            # React Native entry point
 ```
+
 <p align="center">
   Built with ❤️ for the ultimate furniture shopping experience.
 </p>
