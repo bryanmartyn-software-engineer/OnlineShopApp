@@ -109,18 +109,6 @@ OnlineShopApp/
 ├── images/             # App-level assets (Logo, etc.)
 └── index.js            # React Native entry point
 ```
-
----
-
-## 📝 Roadmap
-- [ ] Integration with real Payment Gateways (Stripe/PayPal)
-- [ ] AR (Augmented Reality) Preview to see furniture in your room
-- [ ] Push Notifications for order tracking
-- [ ] Product reviews and user-submitted photos
-- [ ] Multi-language support (i18n)
-
----
-
 <p align="center">
   Built with ❤️ for the ultimate furniture shopping experience.
 </p>
