@@ -199,7 +199,7 @@ export default function ProductDetailScreen({ route, navigation }) {
           </View>
 
           <Text style={[styles.price, darkMode && styles.darkText]}>
-            RM {product.price.toFixed(2)}
+            RM{product.price.toFixed(2)}
           </Text>
 
           <View style={styles.stockContainer}>
@@ -216,37 +216,30 @@ export default function ProductDetailScreen({ route, navigation }) {
             </Text>
           </View>
 
-          {(product.material || product.dimension) && (
-            <View style={[styles.detailsContainer, darkMode && styles.darkDetailsContainer]}>
-              {product.material && (
-                <View style={styles.detailItem}>
-                  <View style={styles.detailIconContainer}>
-                    <MaterialIcons name="layers" size={20} color={Colors.primary} />
-                  </View>
-                  <View style={styles.detailTextContainer}>
-                    <Text style={[styles.detailLabel, darkMode && styles.darkSubText]}>Material</Text>
-                    <Text style={[styles.detailValue, darkMode && styles.darkText]} numberOfLines={2}>
-                      {product.material}
-                    </Text>
-                  </View>
-                </View>
-              )}
-              <View style={styles.detailDivider} />
-              {product.dimension && (
-                <View style={styles.detailItem}>
-                  <View style={styles.detailIconContainer}>
-                    <MaterialIcons name="straighten" size={20} color={Colors.primary} />
-                  </View>
-                  <View style={styles.detailTextContainer}>
-                    <Text style={[styles.detailLabel, darkMode && styles.darkSubText]}>Dimensions</Text>
-                    <Text style={[styles.detailValue, darkMode && styles.darkText]}>
-                      {product.dimension}
-                    </Text>
-                  </View>
-                </View>
-              )}
+          
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderRow}>
+              <MaterialIcons name="layer" size={20} color={Colors.primary} style={{ marginRight: 8 }} />
+              <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
+                Material
+              </Text>
             </View>
-          )}
+            <Text style={[styles.description, darkMode && styles.darkSubText]}>
+              {product.material}
+            </Text>
+          </View>
+          
+          <View style={styles.section}>
+            <View style={styles.sectionHeaderRow}>
+              <MaterialIcons name="straighten" size={20} color={Colors.primary} style={{ marginRight: 8 }} />
+              <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>
+                Dimensions
+              </Text>
+            </View>
+            <Text style={[styles.description, darkMode && styles.darkSubText]}>
+              {product.dimension}
+            </Text>
+          </View>
 
           <View style={styles.section}>
             <View style={styles.sectionHeaderRow}>

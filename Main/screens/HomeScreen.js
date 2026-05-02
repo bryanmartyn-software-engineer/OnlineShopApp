@@ -16,7 +16,7 @@ import { Colors } from '../styles/colors';
 export default function HomeScreen({ route, navigation }) {
   const { products, darkMode, loading, toggleWishlist, isInWishlist, isLogin, BASE_URL } = useContext(ShopContext);
   const [selectedCategory, setSelectedCategory] = useState(route.params?.initialCategory || 'All');
-  const categories = ['All', 'Bedroom', 'Office', 'Dining', 'Outdoor', 'Living Room'];
+  const categories = ['All', 'Bedroom', 'Office', 'Dining', 'Outdoor', 'Living-Room'];
 
   // Update category if route params change
   React.useEffect(() => {
@@ -72,7 +72,7 @@ export default function HomeScreen({ route, navigation }) {
         </Text>
         <View style={styles.priceContainer}>
           <Text style={[styles.productPrice, darkMode && styles.darkText]}>
-            RM {item.price.toFixed(2)}
+            RM{item.price.toFixed(2)}
           </Text>
           <View style={styles.ratingBox}>
             <MaterialIcons name="star" size={14} color="#FFD700" />
@@ -82,16 +82,6 @@ export default function HomeScreen({ route, navigation }) {
       </View>
     </TouchableOpacity>
   );
-
-  const getProductIcon = (category) => {
-    switch (category) {
-      case 'Electronics': return 'devices';
-      case 'Clothing': return 'checkroom';
-      case 'Footwear': return 'sports';
-      case 'Accessories': return 'watch';
-      default: return 'inventory';
-    }
-  };
 
   const HeaderComponent = () => (
     <>
@@ -118,15 +108,15 @@ export default function HomeScreen({ route, navigation }) {
             <TouchableOpacity
               style={[
                 styles.categoryChip,
-                selectedCategory === item && (darkMode ? styles.categoryChipActive : styles.categoryChipActiveLight),
                 darkMode && styles.darkCategoryChip,
+                selectedCategory === item && (darkMode ? styles.categoryChipActive : styles.categoryChipActiveLight),
               ]}
               onPress={() => setSelectedCategory(item)}
             >
               <Text style={[
                 styles.categoryText,
-                selectedCategory === item && styles.categoryTextActive,
                 darkMode && styles.darkCategoryText,
+                selectedCategory === item && styles.categoryTextActive,
               ]}>
                 {item}
               </Text>

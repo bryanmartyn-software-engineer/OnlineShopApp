@@ -15,15 +15,7 @@ export default function PaymentMethodsScreen({ navigation }) {
       expiry: '12/26',
       isDefault: true,
       color: '#1a1f71',
-    },
-    {
-      id: 2,
-      type: 'Mastercard',
-      number: '**** **** **** 1234',
-      expiry: '08/25',
-      isDefault: false,
-      color: '#eb001b',
-    },
+    }
   ];
 
   return (
@@ -48,11 +40,6 @@ export default function PaymentMethodsScreen({ navigation }) {
             </View>
           </View>
         ))}
-        
-        <TouchableOpacity style={[styles.addButton, darkMode && styles.darkAddButton]}>
-          <MaterialIcons name="add-circle-outline" size={24} color={Colors.primary} />
-          <Text style={styles.addButtonText}>Add New Payment Method</Text>
-        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );

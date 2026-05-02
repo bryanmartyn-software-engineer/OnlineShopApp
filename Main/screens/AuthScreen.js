@@ -73,7 +73,7 @@ const InputWithLabel = (props) => {
 };
 
 export default function AuthScreen({ route, navigation }) {
-    const { darkMode, isLogin, login, register, updateUser, userData } = useContext(ShopContext);
+    const { darkMode, isLogin, login, register, verifyUser, updateUser, userData } = useContext(ShopContext);
     const { type } = route.params;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -86,7 +86,7 @@ export default function AuthScreen({ route, navigation }) {
     // login:{email,password},
     // registration:{name,email,password,confirmPassword}
     // verify:{password}
-    // edit:{name,password}
+    // edit:{name,password}/{address}
 
     // for triggering button state
     const [isAuth, setIsAuth] = useState(false);
@@ -123,13 +123,17 @@ export default function AuthScreen({ route, navigation }) {
             result = await login(auth.email, auth.password);
         } else if (type === 'registration') {
             result = await register(auth.name, auth.email, auth.password);
-        } else if (type === 'edit') {
-            result = await updateUser(userData.userId, auth.name, auth.password);
+        } else if (type === 'verify') {
+            result = await verifyUser(auth.password);
+        }else if (type === 'edit') {
+            result = await updateUser(userData.userId, auth.name, auth.password, userData.address);
         }
 
         setLoading(false);
         if (result && result.success) {
-            if (type === 'edit') {
+            if (type === 'verify') {
+                navigation.replace('EditProfile', { type: 'edit' });
+            } else if (type === 'edit') {
                 navigation.goBack();
             } else if (route.params?.returnTo) {
                 navigation.navigate(route.params.returnTo, route.params.returnToParams || {});

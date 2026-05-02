@@ -37,7 +37,7 @@ export default function ProfileScreen({ navigation }) {
     {
       icon: 'attach-money',
       label: 'Cart Total',
-      value: `RM ${getCartTotal().toFixed(2)}`,
+      value: `RM${getCartTotal().toFixed(2)}`,
       color: Colors.success,
     },
   ];
@@ -114,7 +114,11 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <TouchableOpacity style={styles.menuItem}
-            onPress={() => navigation.navigate('EditProfile', { type: 'edit' })}>
+            onPress={() => navigation.navigate('EditProfile', {
+              type: 'verify',
+              returnTo: 'EditProfile',
+              returnToParams: { type: 'edit' }
+            })}>
             <View style={styles.menuLeft}>
               <MaterialIcons name="person-outline" size={22} color={Colors.primary} />
               <Text style={[styles.menuText, darkMode && styles.darkText]}>
@@ -270,7 +274,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   statValue: {
-    fontSize: 18,
+    fontSize: 12,
     fontWeight: '700',
     color: Colors.lightText,
     marginBottom: 4,

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import {
   View,
   Text,
@@ -50,7 +50,7 @@ export default function WishlistScreen({ navigation }) {
         
         <View style={styles.itemFooter}>
           <Text style={[styles.itemPrice, darkMode && styles.darkText]}>
-            RM {item.price.toFixed(2)}
+            ${item.price.toFixed(2)}
           </Text>
           
           <TouchableOpacity
@@ -65,15 +65,6 @@ export default function WishlistScreen({ navigation }) {
     </TouchableOpacity>
   );
 
-  const getProductIcon = (category) => {
-    switch(category) {
-      case 'Electronics': return 'devices';
-      case 'Clothing': return 'checkroom';
-      case 'Footwear': return 'sports';
-      case 'Accessories': return 'watch';
-      default: return 'inventory';
-    }
-  };
   if (!isLogin) {
     return (
       <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>

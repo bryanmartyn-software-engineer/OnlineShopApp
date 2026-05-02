@@ -21,18 +21,9 @@ export default function SearchScreen({ navigation }) {
     if (searchQuery.trim() === '') return [];
     return product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase());
+      product.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.key.toLowerCase().includes(searchQuery.toLowerCase());
   });
-
-  const getProductIcon = (category) => {
-    switch (category) {
-      case 'Electronics': return 'devices';
-      case 'Clothing': return 'checkroom';
-      case 'Footwear': return 'sports';
-      case 'Accessories': return 'watch';
-      default: return 'inventory';
-    }
-  };
 
   const renderProductCard = ({ item }) => (
     <TouchableOpacity
@@ -72,7 +63,7 @@ export default function SearchScreen({ navigation }) {
         </Text>
         <View style={styles.priceContainer}>
           <Text style={[styles.productPrice, darkMode && styles.darkText]}>
-            RM {item.price.toFixed(2)}
+            RM{item.price.toFixed(2)}
           </Text>
           <View style={styles.ratingBox}>
             <MaterialIcons name="star" size={14} color="#FFD700" />

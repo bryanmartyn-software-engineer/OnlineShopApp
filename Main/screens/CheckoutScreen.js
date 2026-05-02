@@ -1,14 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 import { Colors } from '../styles/colors';
+import PaymentMethodsScreen from './PaymentMethodsScreen';
+import ShippingAddressScreen from './ShippingAddressScreen';
 
 export default function CheckoutScreen({ navigation }) {
   const { darkMode, cart, getCartTotal, userData, checkout } = useContext(ShopContext);
   const [loading, setLoading] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(userData?.address || '123 App Street, Tech City');
+  const [selectedAddress, setSelectedAddress] = useState(userData?.address || '');
   const [selectedPayment, setSelectedPayment] = useState('Visa ending in 4589');
+
+  useEffect(() => {
+    setSelectedAddress(userData?.address || '');
+  }, [userData?.address]);
 
   const handleCheckout = async () => {
     setLoading(true);
@@ -30,19 +36,24 @@ export default function CheckoutScreen({ navigation }) {
     <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>Shipping Address</Text>
-        <TouchableOpacity style={[styles.card, darkMode && styles.darkCard]}>
+        <TouchableOpacity style={[styles.card, darkMode && styles.darkCard, 
+            selectedAddress.trim() === '' && { borderWidth: 1, borderColor: 'red' }]}
+            onPress={() => navigation.navigate('Profile', { screen: 'ShippingAddress', params: { returnTab: 'Cart', returnScreen: 'Checkout' } })}>
           <View style={styles.cardInfo}>
             <MaterialIcons name="location-on" size={24} color={Colors.primary} />
             <View style={styles.cardTextContainer}>
-              <Text style={[styles.cardTitle, darkMode && styles.darkText]}>Home</Text>
-              <Text style={[styles.cardSubTitle, darkMode && styles.darkSubText]}>{selectedAddress}</Text>
+              <Text style={[styles.cardTitle, darkMode && styles.darkText]}>Current Address</Text>
+              <Text style={[styles.cardSubTitle, darkMode && styles.darkSubText]}>{
+                selectedAddress.trim() === '' ? 'No address provided' : selectedAddress
+              }</Text>
             </View>
           </View>
           <MaterialIcons name="chevron-right" size={24} color={Colors.primary} />
         </TouchableOpacity>
 
         <Text style={[styles.sectionTitle, darkMode && styles.darkText]}>Payment Method</Text>
-        <TouchableOpacity style={[styles.card, darkMode && styles.darkCard]}>
+        <TouchableOpacity style={[styles.card, darkMode && styles.darkCard]}
+          onPress={() => {navigation.navigate('PaymentMethods')}}>
           <View style={styles.cardInfo}>
             <MaterialIcons name="credit-card" size={24} color={Colors.primary} />
             <View style={styles.cardTextContainer}>
@@ -61,23 +72,23 @@ export default function CheckoutScreen({ navigation }) {
                 {item.quantity}x {item.name}
               </Text>
               <Text style={[styles.summaryItemPrice, darkMode && styles.darkText]}>
-                RM {(item.price * item.quantity).toFixed(2)}
+                RM{(item.price * item.quantity).toFixed(2)}
               </Text>
             </View>
           ))}
           <View style={styles.divider} />
           <View style={styles.summaryItem}>
             <Text style={[styles.totalLabel, darkMode && styles.darkText]}>Total Amount</Text>
-            <Text style={styles.totalValue}>RM {getCartTotal().toFixed(2)}</Text>
+            <Text style={styles.totalValue}>RM{getCartTotal().toFixed(2)}</Text>
           </View>
         </View>
       </ScrollView>
 
       <View style={[styles.footer, darkMode && styles.darkCard]}>
         <TouchableOpacity 
-          style={[styles.checkoutButton, loading && { opacity: 0.7 }]} 
+          style={[styles.checkoutButton, (loading || selectedAddress.trim() === '') && { opacity: 0.7 }]} 
           onPress={handleCheckout}
-          disabled={loading}
+          disabled={loading || selectedAddress.trim() === ''}
         >
           {loading ? (
             <ActivityIndicator color="#FFF" />

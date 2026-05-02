@@ -56,12 +56,10 @@ router.post('/verify', async (req, res) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
-      if (row) {
-        return res.status(400).json({ error: 'Incorrect password or User not found' });
+      if (!row) {
+        return res.status(401).json({ error: 'Incorrect password' });
       }
-      else {
-        res.json({ message: 'User is authenticated' });
-      }
+      res.json({ message: 'User is authenticated' });
     }
   );
 });

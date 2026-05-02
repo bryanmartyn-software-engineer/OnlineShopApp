@@ -1,65 +1,59 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { ShopContext } from '../context/ShopContext';
 import { Colors } from '../styles/colors';
 
-export default function ShippingAddressScreen({ navigation }) {
-  const { darkMode, userData } = useContext(ShopContext);
+export default function ShippingAddressScreen({ navigation, route }) {
+  const { darkMode, userData, updateUser } = useContext(ShopContext);
+  const [newAddress, setNewAddress] = useState(userData?.address || '');
+  const returnTab = route.params?.returnTab;
+  const returnScreen = route.params?.returnScreen;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const addresses = [
-    {
-      id: 1,
-      type: 'Home',
-      address: userData?.address || '123 App Street, Tech City',
-      isDefault: true,
-    },
-    {
-      id: 2,
-      type: 'Office',
-      address: '456 Business Park, Suite 200, Innovation District',
-      isDefault: false,
-    },
-  ];
+  const handleChangeAddress = async () => {
+    setLoading(true);
+    setError('');
+    const result = await updateUser(userData.userId, userData.name, userData.password, newAddress);
+    setLoading(false);
+    if (result.success) {
+      if (returnTab && returnScreen) {
+        navigation.navigate(returnTab, { screen: returnScreen });
+      } else {
+        navigation.goBack();
+      }
+    } else {
+      setError(result.error || 'Failed to update address');
+    }
+  };
+
+  const isDisabled = !newAddress.trim() || newAddress.trim() === (userData?.address || '').trim();
 
   return (
     <SafeAreaView style={[styles.container, darkMode && styles.darkContainer]}>
       <ScrollView contentContainerStyle={styles.content}>
-        {addresses.map((item) => (
-          <View key={item.id} style={[styles.addressCard, darkMode && styles.darkCard]}>
-            <View style={styles.cardHeader}>
-              <View style={styles.typeContainer}>
-                <MaterialIcons 
-                    name={item.type === 'Home' ? 'home' : 'work'} 
-                    size={20} 
-                    color={Colors.primary} 
-                />
-                <Text style={[styles.typeText, darkMode && styles.darkText]}>{item.type}</Text>
-              </View>
-              {item.isDefault && (
-                <View style={styles.defaultBadge}>
-                  <Text style={styles.defaultBadgeText}>Default</Text>
-                </View>
-              )}
-            </View>
-            <Text style={[styles.addressText, darkMode && styles.darkSubText]}>{item.address}</Text>
-            <View style={styles.actions}>
-              <TouchableOpacity style={styles.actionButton}>
-                <MaterialIcons name="edit" size={18} color={Colors.primary} />
-                <Text style={styles.actionText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton}>
-                <MaterialIcons name="delete-outline" size={18} color={Colors.error} />
-                <Text style={[styles.actionText, { color: Colors.error }]}>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-        
-        <TouchableOpacity style={styles.addButton}>
-          <MaterialIcons name="add" size={24} color="#FFF" />
-          <Text style={styles.addButtonText}>Add New Address</Text>
-        </TouchableOpacity>
+        <View style={styles.section}>
+          <Text style={[styles.label, darkMode && styles.darkLabel]}>Change Shipping Address</Text>
+          <TextInput
+            style={[styles.input, darkMode && styles.darkInput]}
+            value={newAddress}
+            onChangeText={setNewAddress}
+            placeholder="Enter new address..."
+            placeholderTextColor={darkMode ? Colors.darkSubText : Colors.lightSubText}
+          />
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          <TouchableOpacity
+            style={[styles.button, isDisabled && { opacity: 0.5 }]}
+            disabled={isDisabled || loading}
+            onPress={handleChangeAddress}>
+            {loading ? (
+              <ActivityIndicator color="#FFF" />
+            ) : (
+              <Text style={styles.buttonText}>Change Address</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -76,87 +70,54 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
-  addressCard: {
+  section: {
+    marginTop: 20,
+  },
+  label: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.lightText,
+    marginBottom: 10,
+  },
+  darkLabel: {
+    color: Colors.darkText,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: Colors.lightBorder,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
     backgroundColor: Colors.lightSurface,
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    fontSize: 20,
+    minHeight: 60,
+    textAlignVertical: 'center',
+  },
+  darkInput: {
+    backgroundColor: Colors.darkSurface,
+    borderColor: Colors.darkBorder,
+    color: Colors.darkText,
+  },
+  errorText: {
+    color: Colors.error,
+    marginTop: 10,
+    fontSize: 14,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 20,
+    shadowColor: Colors.black,
     shadowOpacity: 0.1,
-    shadowRadius: 8,
+    shadowRadius: 5,
     elevation: 3,
   },
-  darkCard: {
-    backgroundColor: Colors.darkSurface,
-    shadowOpacity: 0.3,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  typeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  typeText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: Colors.lightText,
-  },
-  defaultBadge: {
-    backgroundColor: 'rgba(201, 155, 105, 0.1)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.primary,
-  },
-  defaultBadgeText: {
-    color: Colors.primary,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  addressText: {
-    fontSize: 14,
-    color: Colors.lightSubText,
-    lineHeight: 20,
-    marginBottom: 16,
-  },
-  actions: {
-    flexDirection: 'row',
-    borderTopWidth: 1,
-    borderTopColor: Colors.lightBorder,
-    paddingTop: 12,
-    gap: 20,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  actionText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.primary,
-  },
-  addButton: {
-    backgroundColor: Colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginTop: 10,
-    gap: 8,
-  },
-  addButtonText: {
+  buttonText: {
     color: '#FFF',
+    fontWeight: 'bold',
     fontSize: 16,
-    fontWeight: '700',
   },
   darkText: { color: Colors.darkText },
   darkSubText: { color: Colors.darkSubText },

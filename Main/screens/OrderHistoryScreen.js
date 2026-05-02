@@ -17,23 +17,6 @@ export default function OrderHistoryScreen({ navigation }) {
         setOrders(data);
       } catch (error) {
         console.error('Error fetching orders:', error);
-        // Fallback to examples if API fails or is empty
-        setOrders([
-            {
-                orderId: 'ORD-2026-001',
-                orderDate: new Date('2026-04-15').toISOString(),
-                totalAmount: 535.98,
-                status: 'Delivered',
-                itemsCount: 2
-            },
-            {
-                orderId: 'ORD-2026-002',
-                orderDate: new Date('2026-04-28').toISOString(),
-                totalAmount: 89.99,
-                status: 'In Transit',
-                itemsCount: 1
-            }
-        ]);
       } finally {
         setLoading(false);
       }
@@ -43,7 +26,8 @@ export default function OrderHistoryScreen({ navigation }) {
   }, []);
 
   const renderOrderItem = ({ item }) => (
-    <TouchableOpacity style={[styles.orderCard, darkMode && styles.darkCard]}>
+    <TouchableOpacity style={[styles.orderCard, darkMode && styles.darkCard]}
+      onPress={() => navigation.navigate('OrderDetail', { order: item })}>
       <View style={styles.orderHeader}>
         <View>
           <Text style={[styles.orderId, darkMode && styles.darkText]}>#{item.orderId}</Text>
@@ -55,28 +39,20 @@ export default function OrderHistoryScreen({ navigation }) {
             })}
           </Text>
         </View>
-        <View style={[
-            styles.statusBadge, 
-            { backgroundColor: item.status === 'Delivered' ? 'rgba(76, 175, 80, 0.1)' : 'rgba(255, 152, 0, 0.1)' }
-        ]}>
-          <Text style={[
-              styles.statusText, 
-              { color: item.status === 'Delivered' ? Colors.success : '#FF9800' }
-          ]}>
-            {item.status || 'Processing'}
-          </Text>
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusText}>Delivered</Text>
         </View>
       </View>
       
       <View style={styles.orderFooter}>
         <View style={styles.infoGroup}>
           <Text style={[styles.infoLabel, darkMode && styles.darkSubText]}>TOTAL</Text>
-          <Text style={[styles.infoValue, darkMode && styles.darkText]}>RM {item.totalAmount.toFixed(2)}</Text>
+          <Text style={[styles.infoValue, darkMode && styles.darkText]}>${item.totalAmount.toFixed(2)}</Text>
         </View>
-        <TouchableOpacity style={styles.detailsButton}>
+        <View style={styles.detailsButton}>
           <Text style={styles.detailsButtonText}>Details</Text>
           <MaterialIcons name="chevron-right" size={20} color={Colors.primary} />
-        </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -162,10 +138,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
+    backgroundColor: 'rgba(255, 152, 0, 0.1)'
   },
   statusText: {
     fontSize: 12,
     fontWeight: '700',
+    color: Colors.success,
   },
   orderFooter: {
     flexDirection: 'row',

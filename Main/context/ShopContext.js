@@ -62,6 +62,7 @@ export const ShopProvider = ({ children }) => {
           images: p.images || [],
           rating: (p.popularity / 2).toFixed(1),
           stock: p.stockQuantity,
+          key: p.key,
         }));
 
         setProducts(mappedProducts);
@@ -329,18 +330,47 @@ export const ShopProvider = ({ children }) => {
     AsyncStorage.removeItem('userData');
   };
 
-  const updateUser = async (userId, name, password) => {
+   const verifyUser = async (password) => {
     try {
+      const checkResponse = await fetch(`${API_URL}/auth/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userData.userId, password }),
+      });
+
+      const data = await checkResponse.json();
+
+      if (checkResponse.ok) {
+        return { success: true };
+      } else {
+        return { success: false, error: data.error };
+      }
+    } catch (error) {
+      return { success: false, error: 'Network error. Please try again.' };
+    }
+  };
+
+  const updateUser = async (userId, name, password, address) => {
+    try {
+      const checkResponse = await fetch(`${API_URL}/auth/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, name, password, address }),
+      });
+
+      const checkData = await checkResponse.json();
+      if (!checkResponse.ok) return { success: false, error: checkData.error };
+
       const response = await fetch(`${API_URL}/users/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, password }),
+        body: JSON.stringify({ name, password, address }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        const updatedUser = { ...userData, name };
+        const updatedUser = { ...userData, name, address };
         setUserData(updatedUser);
         await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
         return { success: true };
@@ -417,6 +447,7 @@ export const ShopProvider = ({ children }) => {
       logout,
       updateUser,
       checkout,
+      verifyUser,
       API_URL,
       BASE_URL,
     }}>

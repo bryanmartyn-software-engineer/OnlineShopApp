@@ -19,6 +19,7 @@ import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodsScreen from './screens/PaymentMethodsScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import CheckoutScreen from './screens/CheckoutScreen';
+import OrderHistoryDetailScreen from './screens/OrderHistoryDetailScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -263,6 +264,11 @@ function ProfileStack() {
             name="OrderHistory"
             component={OrderHistoryScreen}
             options={{ title: 'Order History' }}
+          />
+          <Stack.Screen
+            name="OrderDetail"
+            component={OrderHistoryDetailScreen}
+            options={{ title: 'Order Details' }}
           />
           <Stack.Screen
             name="HelpCenter"

@@ -20,7 +20,6 @@ router.get('/', async (req, res) => {
       if (err) {
         return res.status(500).json({ error: err.message });
       }
-      
       const formattedRows = rows.map(row => ({
         ...row,
         items: row.items ? JSON.parse(row.items).filter(item => item.orderId !== null) : []
