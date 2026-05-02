@@ -111,5 +111,5 @@ OnlineShopApp/
 ```
 
 <p align="center">
-  Built with ❤️ for the ultimate furniture shopping experience.
+  Built with ❤️ for the ultimate furniture shopping experience. :D
 </p>
