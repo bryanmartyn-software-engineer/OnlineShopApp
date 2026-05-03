@@ -19,11 +19,11 @@ export default function OrderHistoryDetailScreen({ route, navigation }) {
         <View style={styles.itemDetails}>
             <View style={styles.priceRow}>
             <Text style={[styles.label, darkMode && styles.darkSubText]}>Price per Unit:</Text>
-            <Text style={[styles.value, darkMode && styles.darkText]}>${product.price}</Text>
+            <Text style={[styles.value, darkMode && styles.darkText]}>RM{product.price}</Text>
             </View>
             <View style={styles.priceRow}>
             <Text style={[styles.label, darkMode && styles.darkSubText]}>Total:</Text>
-            <Text style={[styles.value, darkMode && styles.darkText]}>${(product.price * item.quantity).toFixed(2)}</Text>
+            <Text style={[styles.value, darkMode && styles.darkText]}>RM{(product.price * item.quantity).toFixed(2)}</Text>
             </View>
         </View>
         </View>
@@ -75,7 +75,7 @@ export default function OrderHistoryDetailScreen({ route, navigation }) {
         <View style={[styles.totalSection, darkMode && styles.darkCard]}>
           <View style={styles.totalRow}>
             <Text style={[styles.totalLabel, darkMode && styles.darkText]}>Total Amount:</Text>
-            <Text style={[styles.totalValue, darkMode && styles.darkText]}>${order.totalAmount.toFixed(2)}</Text>
+            <Text style={[styles.totalValue, darkMode && styles.darkText]}>RM{order.totalAmount.toFixed(2)}</Text>
           </View>
         </View>
       </ScrollView>

@@ -47,7 +47,7 @@ export default function OrderHistoryScreen({ navigation }) {
       <View style={styles.orderFooter}>
         <View style={styles.infoGroup}>
           <Text style={[styles.infoLabel, darkMode && styles.darkSubText]}>TOTAL</Text>
-          <Text style={[styles.infoValue, darkMode && styles.darkText]}>${item.totalAmount.toFixed(2)}</Text>
+          <Text style={[styles.infoValue, darkMode && styles.darkText]}>RM{item.totalAmount.toFixed(2)}</Text>
         </View>
         <View style={styles.detailsButton}>
           <Text style={styles.detailsButtonText}>Details</Text>
